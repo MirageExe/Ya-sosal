@@ -19,6 +19,26 @@
   group: generic
 
 - type: cargoProduct
+  id: EngineAmeShieldingGeneric
+  icon:
+    sprite: Objects/Devices/flatpack.rsi
+    state: ame-part
+  product: CrateEngineeringAMEShielding
+  cost: 5000
+  category: cargoproduct-category-name-engineering
+  group: generic
+
+- type: cargoProduct
+  id: EngineAmeControlGeneric
+  icon:
+    sprite: Structures/Power/Generation/ame.rsi
+    state: control
+  product: CrateEngineeringAMEControl
+  cost: 5000
+  category: cargoproduct-category-name-engineering
+  group: generic
+
+- type: cargoProduct
   id: MetalFoamGeneric
   icon:
     sprite: Objects/Weapons/Grenades/smoke.rsi
