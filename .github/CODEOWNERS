@@ -2,10 +2,10 @@
 # НЕ ИЗМЕНЯТЬ ФАЙЛ ПРИ АПСТРИМЕ/ОБНОВЛЕНИИ.
 
 # C#
-/Content.*/** @SunChan07 # Временная строка пока не будет больше ревьюверов
+/Content.*/** @Odleer # Временная строка пока не будет больше ревьюверов
 
 # Ресурсы
-/Resources/** @SunChan07 # Временная строка пока не будет больше ревьюверов
+/Resources/** @Odleer # Временная строка пока не будет больше ревьюверов
 
 # /Resources/Textures/** 
 # /Resources/Maps/**
@@ -15,4 +15,4 @@
 # Копирайт
 *.md @ReWAFFlution
 *.txt @ReWAFFlution
-Resources/**/meta.json @ReWAFFlution
+# Resources/**/meta.json @ReWAFFlution
