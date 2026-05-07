@@ -272,6 +272,8 @@
       - EnergySwordFamilies
       - Plashammer
       - PlasHalberd
+  - type: Reflect
+    reflectProb: 0.25
 
 - type: entity
   name: SCHK-1 plasma-bladed halberd
@@ -327,6 +329,8 @@
       - PlasHalberd
       - Plashammer
       - EnergySwordFamilies
+  - type: Reflect
+    reflectProb: 0.25
 
 - type: entity
   name: SCHK-3 charge warhammer
@@ -365,6 +369,8 @@
       - Plashammer
       - EnergySwordFamilies
       - PlasHalberd
+  - type: Reflect
+    reflectProb: 0.25
 
 - type: entity
   name: SHI-30J Paperwork
