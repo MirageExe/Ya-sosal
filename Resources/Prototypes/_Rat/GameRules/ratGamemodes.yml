@@ -80,7 +80,15 @@
         IFFFaction: TAP
         randomOffsetX: 2000
         randomOffsetY: 2000
-      Deepbelt:
-        gameMapID: Deepbelt
+      RatFakel:
+        gameMapID: RatFakel
         posX: 0
         posY: 0
+      RatBuran:
+        gameMapID: RatBuran
+        posX: -500
+        posY: 4300
+      RatKovf:
+        gameMapID: RatKovf
+        posX: 500
+        posY: -4300

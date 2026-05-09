@@ -48,6 +48,47 @@
         layer:
           - MachineLayer
 
+#AUTODISK
+
+- type: entityList
+  id: autodiskDropTable
+  entities:
+  - ResearchDisk
+  - ResearchDisk5000
+  - ResearchDisk5000
+  - ResearchDisk5000
+  - ResearchDisk1000
+  - ResearchDisk1000
+  - ResearchDisk1000
+  - ResearchDisk1000
+  - ResearchDisk1000
+
+- type: entity
+  parent: PassiveSpawnerDebugPrototype
+  id: AutodiskPassiveFactory
+  name: antique NT-AD-2 automated drill
+  description: An antique NanoTrasen research facility that generates research points. Looks like you could get it back in working order with some effort.
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/purifier.rsi
+    snapCardinals: true
+    layers:
+    - state: base_machine
+  - type: PassiveSpawningMachine
+    entityListProto: autodiskDropTable
+    spawnDelay: 30
+    requirePower: true
+    manualActivation: true # Rat
+    cycleDuration: 300 # Rat
+  - type: ActivatableUI
+    key: enum.AutominerUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.AutominerUiKey.Key:
+        type: AutominerBoundUserInterface
+  - type: Destructible
+    thresholds: []
+
 #AUTOMINER
 
 - type: entityList
@@ -101,6 +142,8 @@
     interfaces:
       enum.AutominerUiKey.Key:
         type: AutominerBoundUserInterface
+  - type: Destructible
+    thresholds: []
 #AUTOFOUNDRY
 
 - type: entityList
