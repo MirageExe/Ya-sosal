@@ -188,7 +188,7 @@
   id: CorpoSong
   name: Orange Sector - Farben
   path:
-    path:"/Audio/_Crescent/Jukebox/farben.ogg
+    path: /Audio/_Crescent/Jukebox/farben.ogg
 
 - type: jukebox
   id: SlaughterSong
@@ -216,7 +216,7 @@
 
 - type: jukebox
   id: acid2
-  name: Death's Door - Uncle Acid
+  name: "Death's Door - Uncle Acid"
   path:
     path: /Audio/_Crescent/Jukebox/deathsdoor.ogg
 
