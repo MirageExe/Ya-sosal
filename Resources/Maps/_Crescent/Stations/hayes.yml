@@ -15291,36 +15291,6 @@ entities:
           priority: 0
           component: ClothingSpeedModifier
         title: null
-- proto: ClothingBeltSyndicateWebbingInterdyne
-  entities:
-  - uid: 1010
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1017
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1024
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1031
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
 - proto: ClothingEyesGlassesChemical
   entities:
   - uid: 1037
@@ -15331,34 +15301,6 @@ entities:
       parent: 1
 - proto: ClothingMaskSyndicateFacemask
   entities:
-  - uid: 1011
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1018
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1025
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1032
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
   - uid: 1039
     components:
     - type: Transform
@@ -15419,66 +15361,8 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ClothingOuterHardsuitTraumasec
-  entities:
-  - uid: 1012
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1019
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1026
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1033
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
 - proto: ClothingShoesBootsMagAdv
   entities:
-  - uid: 1013
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1020
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1027
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1034
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
   - uid: 1041
     components:
     - type: Transform
@@ -17434,34 +17318,6 @@ entities:
       parent: 1
 - proto: JetpackBlackFilled
   entities:
-  - uid: 1014
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1021
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1028
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1035
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
   - uid: 1042
     components:
     - type: Transform
@@ -19492,25 +19348,13 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 6.5,-0.5
       parent: 1
-- proto: SuitStorageBase
+- proto: ColMarTechEquipmentInterdyne
   entities:
   - uid: 1009
     components:
     - type: Transform
       pos: 2.5,4.5
       parent: 1
-    - type: ContainerContainer
-      containers:
-        entity_storage: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 1012
-          - 1010
-          - 1015
-          - 1011
-          - 1014
-          - 1013
   - uid: 1016
     components:
     - type: Transform
@@ -19911,34 +19755,6 @@ entities:
       parent: 1
 - proto: VitalsTrackingImplanterInterdyne
   entities:
-  - uid: 1015
-    components:
-    - type: Transform
-      parent: 1009
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1022
-    components:
-    - type: Transform
-      parent: 1016
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1029
-    components:
-    - type: Transform
-      parent: 1023
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
-  - uid: 1036
-    components:
-    - type: Transform
-      parent: 1030
-    - type: Physics
-      canCollide: False
-    - type: InsideEntityStorage
   - uid: 1043
     components:
     - type: Transform
