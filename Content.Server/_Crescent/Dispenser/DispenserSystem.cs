@@ -8,6 +8,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Mind;
 using Content.Shared.Popups;
+using Content.Shared._Rat.Cloning;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 
@@ -69,6 +70,18 @@ public sealed class DispenserSystem : SharedDispenserSystem
                 _audioSystem.PlayPvs(component.DenySound, uid);
                 return;
             }
+        }
+
+        if (TryComp<MetaDataComponent>(uid, out meta) &&
+            meta.EntityPrototype?.ID == "BioprocessorInterdyne" &&
+            HasComp<CloneOrganComponent>(used))
+        {
+            args.Handled = true;
+            _popup.PopupEntity(
+                Loc.GetString("bioprocessor-interdyne-clone-organ-denied"),
+                uid, args.User, PopupType.MediumCaution);
+            _audioSystem.PlayPvs(component.DenySound, uid);
+            return;
         }
 
         if (!TryPrototype(used, out var prototype))

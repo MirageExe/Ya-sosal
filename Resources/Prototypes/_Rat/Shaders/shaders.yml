@@ -1,0 +1,4 @@
+- type: shader
+  id: CloneOrganLimeOverlay
+  kind: source
+  path: "/Textures/_Rat/Shaders/clone_organ_lime_overlay.swsl"
