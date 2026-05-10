@@ -223,6 +223,11 @@ public sealed class WorldControllerSystem : EntitySystem
         if (!Resolve(map, ref controller))
             throw new Exception($"Tried to use {ToPrettyString(map)} as a world map, without actually being one.");
 
+		// Rat-start
+        if (Math.Abs(chunk.X) > 40 || Math.Abs(chunk.Y) > 40)
+            return null;
+		// Rat-end
+
         if (controller.Chunks.TryGetValue(chunk, out var ent))
             return ent;
         return CreateChunkEntity(chunk, map, controller);
