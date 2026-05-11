@@ -21,17 +21,22 @@ void fragment()
     highp vec3 detail = base.rgb * vec3(0.95, 0.82, 0.98);
     highp vec3 color = mix(remapped, detail, 0.16);
 
-    // Layer 2: iridescent curved streaks closer to the reference.
+    // Layer 2: iridescent streaks — quantized to texture pixels (blocky / retro scanlines).
     highp vec2 px = UV / TEXTURE_PIXEL_SIZE;
-    highp float curve = px.y + sin(px.x * 0.25) * 1.7 + sin(px.y * 0.12) * 1.1 + TIME * 0.12;
-    highp float band = fract(curve / 5.0);
-    highp float streak = smoothstep(0.02, 0.10, band) * (1.0 - smoothstep(0.10, 0.18, band));
+    highp vec2 qpx = floor(px);
+    // Wiggle only on whole pixels so edges stay stepped, not smooth-antialiased ribbons.
+    highp float curve = qpx.y + sin(qpx.x * 0.28) * 2.0 + sin(qpx.y * 0.14) * 1.2 + floor(TIME * 12.0) * 0.08;
+    highp float stripePeriod = 4.0;
+    highp float band = fract(floor(curve) / stripePeriod);
+    // Slightly wider band so stripes read a bit stronger on small organ sprites.
+    highp float streak = smoothstep(0.08, 0.15, band) * (1.0 - smoothstep(0.20, 0.28, band));
 
-    highp vec3 iridescentA = vec3(0.90, 0.52, 0.75);
-    highp vec3 iridescentB = vec3(0.31, 0.46, 0.98);
-    highp float iriT = 0.5 + 0.5 * sin(curve * 0.33 + TIME * 1.6);
+    highp vec3 iridescentA = vec3(0.95, 0.48, 0.78);
+    highp vec3 iridescentB = vec3(0.26, 0.50, 1.00);
+    highp float iriPhase = sin(floor(curve) * 0.38 + floor(TIME * 16.0) * 0.31);
+    highp float iriT = floor((0.5 + 0.5 * iriPhase) * 5.0) / 5.0;
     highp vec3 iridescent = mix(iridescentA, iridescentB, iriT);
-    color = mix(color, iridescent, streak * 0.35);
+    color = mix(color, iridescent, streak * 0.48);
 
     // Chromatic micro-fringe.
     highp float xEdge = (zTexture(UV + vec2(TEXTURE_PIXEL_SIZE.x, 0.0)).a -
