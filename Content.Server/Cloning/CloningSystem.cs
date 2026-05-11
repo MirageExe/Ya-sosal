@@ -47,7 +47,6 @@ using Content.Server.Power.Components;
 using Content.Shared.Drunk;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Power;
-using Content.Shared.Body.Systems;
 using Content.Shared._Rat.Cloning;
 
 
@@ -85,7 +84,6 @@ public sealed partial class CloningSystem : EntitySystem
     [Dependency] private readonly ThirstSystem _thirst = default!;
     [Dependency] private readonly SharedDrunkSystem _drunk = default!;
     [Dependency] private readonly MobThresholdSystem _thresholds = default!;
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!;
     public readonly Dictionary<MindComponent, EntityUid> ClonesWaitingForMind = new();
 
     // <summary>
@@ -229,7 +227,8 @@ public sealed partial class CloningSystem : EntitySystem
             return true;
 
         var mob = FetchAndSpawnMob(uid, clonePod, pref, speciesPrototype, humanoid, bodyToClone, geneticDamage);
-        MarkCloneOrgans(mob);
+        var organMarking = new CloneBodySpawnedForOrganMarkingEvent();
+        RaiseLocalEvent(mob, ref organMarking);
         var ev = new CloningEvent(bodyToClone, mob);
         RaiseLocalEvent(bodyToClone, ref ev);
 
@@ -252,14 +251,6 @@ public sealed partial class CloningSystem : EntitySystem
                     special.AfterEquip(mob);
 
         return true;
-    }
-
-    private void MarkCloneOrgans(EntityUid cloneUid)
-    {
-        foreach (var (organUid, _) in _bodySystem.GetBodyOrgans(cloneUid))
-        {
-            EnsureComp<CloneOrganComponent>(organUid);
-        }
     }
 
     /// <summary>

@@ -5,8 +5,6 @@ namespace Content.Client._Rat.Cloning;
 
 public sealed class CloneOrganVisualsSystem : EntitySystem
 {
-    private const string ShaderName = "CloneOrganOverlay";
-
     public override void Initialize()
     {
         base.Initialize();
@@ -17,7 +15,7 @@ public sealed class CloneOrganVisualsSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, CloneOrganComponent component, ComponentStartup args)
     {
-        ApplyShader(uid);
+        ApplyShader(uid, component);
     }
 
     private void OnShutdown(EntityUid uid, CloneOrganComponent component, ComponentShutdown args)
@@ -35,18 +33,21 @@ public sealed class CloneOrganVisualsSystem : EntitySystem
 
     private void OnAppearanceChange(EntityUid uid, CloneOrganComponent component, ref AppearanceChangeEvent args)
     {
-        ApplyShader(uid, args.Sprite);
+        ApplyShader(uid, component, args.Sprite);
     }
 
-    private void ApplyShader(EntityUid uid, SpriteComponent? sprite = null)
+    private void ApplyShader(EntityUid uid, CloneOrganComponent? comp = null, SpriteComponent? sprite = null)
     {
+        if (comp == null && !TryComp(uid, out comp))
+            return;
+
         if (!Resolve(uid, ref sprite, false))
             return;
 
         var idx = 0;
         foreach (var _ in sprite.AllLayers)
         {
-            sprite.LayerSetShader(idx, ShaderName);
+            sprite.LayerSetShader(idx, comp.SpriteShader);
             idx++;
         }
     }

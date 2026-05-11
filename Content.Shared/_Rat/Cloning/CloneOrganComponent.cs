@@ -5,4 +5,10 @@ namespace Content.Shared._Rat.Cloning;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class CloneOrganComponent : Component
 {
+    /// <summary>
+    /// Client sprite layer shader prototype id applied to this organ.
+    /// </summary>
+    [DataField]
+    public string SpriteShader = "CloneOrganOverlay";
 }
+

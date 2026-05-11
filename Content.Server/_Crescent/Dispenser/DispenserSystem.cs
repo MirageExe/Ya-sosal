@@ -1,15 +1,13 @@
-using Content.Server._Rat.Mind;
 using Content.Server.Body.Components;
 using Content.Shared._Rat.Mind;
 using Content.Shared.Body.Part;
-using Content.Shared.Body.Systems;
 using Content.Shared.Crescent.Dispenser;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory.VirtualItem;
-using Content.Shared.Mind;
 using Content.Shared.Popups;
-using Content.Shared._Rat.Cloning;
+using Content.Shared._Rat.Dispenser;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Crescent.Dispenser;
@@ -21,8 +19,7 @@ public sealed class DispenserSystem : SharedDispenserSystem
     [Dependency] private readonly StationTradeMarketSystem _marketSystem = default!;
     [Dependency] private readonly Stack.StackSystem _stackSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!;
-    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
+    [Dependency] private readonly IComponentFactory _componentFactory = default!;
   
     public override void Initialize()  
     {  
@@ -72,16 +69,23 @@ public sealed class DispenserSystem : SharedDispenserSystem
             }
         }
 
-        if (TryComp<MetaDataComponent>(uid, out meta) &&
-            meta.EntityPrototype?.ID == "BioprocessorInterdyne" &&
-            HasComp<CloneOrganComponent>(used))
+        if (TryComp<DispenserRejectedComponentsComponent>(uid, out var rejector))
         {
-            args.Handled = true;
-            _popup.PopupEntity(
-                Loc.GetString("bioprocessor-interdyne-clone-organ-denied"),
-                uid, args.User, PopupType.MediumCaution);
-            _audioSystem.PlayPvs(component.DenySound, uid);
-            return;
+            foreach (var name in rejector.RejectedComponents)
+            {
+                if (!_componentFactory.TryGetRegistration(name, out var registration))
+                    continue;
+
+                if (!HasComp(used, registration.Type))
+                    continue;
+
+                args.Handled = true;
+                _popup.PopupEntity(
+                    Loc.GetString(rejector.DenyPopup),
+                    uid, args.User, PopupType.MediumCaution);
+                _audioSystem.PlayPvs(component.DenySound, uid);
+                return;
+            }
         }
 
         if (!TryPrototype(used, out var prototype))
