@@ -1,4 +1,4 @@
-namespace Content.Server._NF.Shipyard;
+namespace Content.Server.Shipyard; // rat-change
 
 /// <summary>
 /// Raised on a ship when it is bought.

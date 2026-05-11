@@ -53,6 +53,7 @@ public class RCDSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     [Dependency] private readonly IRobustRandom _random = default!;
 

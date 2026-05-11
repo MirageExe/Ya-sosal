@@ -1,4 +1,4 @@
-using Content.Server._NF.Shipyard;
+using Content.Server.Shipyard;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Mono.ShipRepair;
 
