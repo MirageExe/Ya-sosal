@@ -20,8 +20,8 @@ namespace Content.Client.Ghost
         public int AvailableGhostRoleCount { get; private set; }
         public bool InsuranceRespawnAvailable { get; private set; }
         public TimeSpan InsuranceRespawnAt { get; private set; } = TimeSpan.Zero;
-        /// <summary>When false, insurance respawn must stay disabled (no spawn machine bound).</summary>
-        public bool InsuranceSpawnMachineReady { get; private set; } = true;
+        public bool InsuranceSpawnMachineBound { get; private set; } = true;
+        public bool InsuranceSpawnMachinePowered { get; private set; } = true;
 
         private bool _ghostVisibility = true;
 
@@ -147,7 +147,8 @@ namespace Content.Client.Ghost
 
             InsuranceRespawnAvailable = false;
             InsuranceRespawnAt = TimeSpan.Zero;
-            InsuranceSpawnMachineReady = true;
+            InsuranceSpawnMachineBound = true;
+            InsuranceSpawnMachinePowered = true;
 
             GhostVisibility = false;
             PlayerRemoved?.Invoke(component);
@@ -196,7 +197,8 @@ namespace Content.Client.Ghost
         {
             InsuranceRespawnAvailable = msg.Available;
             InsuranceRespawnAt = msg.RespawnAt;
-            InsuranceSpawnMachineReady = msg.SpawnMachineReady;
+            InsuranceSpawnMachineBound = msg.SpawnMachineBound;
+            InsuranceSpawnMachinePowered = msg.SpawnMachinePowered;
             if (Player != null)
                 PlayerUpdated?.Invoke(Player);
         }
@@ -208,7 +210,8 @@ namespace Content.Client.Ghost
         {
             InsuranceRespawnAvailable = false;
             InsuranceRespawnAt = TimeSpan.Zero;
-            InsuranceSpawnMachineReady = true;
+            InsuranceSpawnMachineBound = true;
+            InsuranceSpawnMachinePowered = true;
         }
 
         public void RequestWarps()

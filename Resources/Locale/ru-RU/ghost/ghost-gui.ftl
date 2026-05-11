@@ -36,3 +36,4 @@ ghost-gui-return-to-round-button = Вернуться в раунд
 ghost-gui-insurance-respawn-ready = Воспользоваться страховкой
 ghost-gui-insurance-respawn-timer = Страховка через {$time}
 ghost-gui-insurance-respawn-no-machine = Страховка (нет доступного аппарата клонирования)
+ghost-gui-insurance-respawn-no-power = Страховка (нет питания у аппарата)

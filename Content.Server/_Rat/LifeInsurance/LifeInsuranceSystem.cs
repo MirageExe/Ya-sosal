@@ -6,6 +6,8 @@ using Content.Server.GameTicking;
 using Content.Server.Materials;
 using Content.Server.Mind;
 using Content.Server.Popups;
+using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Standing;
 using Content.Server.Station.Systems;
 using Content.Shared._Rat.LifeInsurance;
@@ -17,6 +19,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.Power;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.GameTicking;
@@ -53,6 +56,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly LayingDownSystem _layingDown = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
     private TimeSpan _nextGhostSync = TimeSpan.Zero;
 
     /// <summary>
@@ -82,6 +86,22 @@ public sealed class LifeInsuranceSystem : EntitySystem
         SubscribeLocalEvent<GhostComponent, MindAddedMessage>(OnGhostMindAdded);
 
         SubscribeNetworkEvent<GhostInsuranceRespawnRequest>(OnInsuranceRespawnRequest);
+        SubscribeLocalEvent<ApcPowerReceiverComponent, PowerChangedEvent>(OnInsuranceSpawnMachinePowerChanged);
+    }
+
+    private void OnInsuranceSpawnMachinePowerChanged(EntityUid uid, ApcPowerReceiverComponent component, ref PowerChangedEvent args)
+    {
+        if (!HasComp<LifeInsuranceSpawnMachineComponent>(uid))
+            return;
+
+        var query = EntityQueryEnumerator<LifeInsuranceComponent>();
+        while (query.MoveNext(out var mindId, out var life))
+        {
+            if (life.PreferredSpawnMachine != uid || life.PendingRespawnAt is not { } at)
+                continue;
+
+            PushInsuranceStatusToMind(mindId, true, at);
+        }
     }
 
     public override void Update(float frameTime)
@@ -128,11 +148,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
         if (args.SpawnMachine.Valid)
         {
             var spawnEnt = GetEntity(args.SpawnMachine);
-            var consoleStation = _station.GetOwningStation(uid);
-            if (spawnEnt == EntityUid.Invalid
-                || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnEnt)
-                || consoleStation == null
-                || _station.GetOwningStation(spawnEnt) != consoleStation)
+            if (spawnEnt == EntityUid.Invalid || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnEnt))
             {
                 _popup.PopupEntity(Loc.GetString("life-insurance-popup-invalid-spawn-machine"), uid, user, PopupType.Small);
                 return;
@@ -279,7 +295,6 @@ public sealed class LifeInsuranceSystem : EntitySystem
             return;
         }
 
-        var consoleStation = _station.GetOwningStation(uid);
         var target = GetEntity(args.Target);
         var spawnMachine = GetEntity(args.SpawnMachine);
 
@@ -290,8 +305,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
         }
 
         if (spawnMachine == EntityUid.Invalid
-            || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnMachine)
-            || _station.GetOwningStation(spawnMachine) != consoleStation)
+            || !HasComp<LifeInsuranceSpawnMachineComponent>(spawnMachine))
         {
             _popup.PopupEntity(Loc.GetString("life-insurance-popup-invalid-spawn-machine"), uid, user, PopupType.Small);
             return;
@@ -313,11 +327,10 @@ public sealed class LifeInsuranceSystem : EntitySystem
 
     private void OnSpawnMachineTerminating(EntityUid uid, LifeInsuranceSpawnMachineComponent component, ref EntityTerminatingEvent args)
     {
-        var station = _station.GetOwningStation(uid);
-        ReassignSpawnMachinesAfterRemoval(uid, station);
+        ReassignSpawnMachinesAfterRemoval(uid);
     }
 
-    private void ReassignSpawnMachinesAfterRemoval(EntityUid removed, EntityUid? stationFilter)
+    private void ReassignSpawnMachinesAfterRemoval(EntityUid removed)
     {
         var query = EntityQueryEnumerator<LifeInsuranceComponent>();
         while (query.MoveNext(out var mindId, out var life))
@@ -325,7 +338,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
             if (life.PreferredSpawnMachine != removed)
                 continue;
 
-            life.PreferredSpawnMachine = TryPickRandomSpawnMachine(stationFilter, removed);
+            life.PreferredSpawnMachine = TryPickRandomSpawnMachine(exclude: removed);
             Dirty(mindId, life);
 
             if (!TryComp<MindComponent>(mindId, out var mind) || mind.Session == null)
@@ -336,16 +349,13 @@ public sealed class LifeInsuranceSystem : EntitySystem
         }
     }
 
-    private EntityUid? TryPickRandomSpawnMachine(EntityUid? stationFilter, EntityUid? exclude = null)
+    private EntityUid? TryPickRandomSpawnMachine(EntityUid? exclude = null)
     {
         var candidates = new List<EntityUid>();
         var enumerator = EntityQueryEnumerator<LifeInsuranceSpawnMachineComponent>();
         while (enumerator.MoveNext(out var machineUid, out _))
         {
             if (exclude != null && machineUid == exclude.Value)
-                continue;
-
-            if (stationFilter != null && _station.GetOwningStation(machineUid) != stationFilter)
                 continue;
 
             candidates.Add(machineUid);
@@ -364,6 +374,20 @@ public sealed class LifeInsuranceSystem : EntitySystem
             return false;
 
         return !TerminatingOrDeleted(sm) && HasComp<LifeInsuranceSpawnMachineComponent>(sm);
+    }
+
+    /// <summary>
+    /// Bound insurance spawn machine is receiving APC power (required for respawn, not for console binding).
+    /// </summary>
+    private bool InsuranceSpawnMachineReceivesPower(EntityUid mindId)
+    {
+        if (!TryComp<LifeInsuranceComponent>(mindId, out var life)
+            || life.PreferredSpawnMachine is not { } sm
+            || TerminatingOrDeleted(sm)
+            || !HasComp<LifeInsuranceSpawnMachineComponent>(sm))
+            return false;
+
+        return _powerReceiver.IsPowered((sm, default));
     }
 
     private bool HasConsoleAccess(EntityUid console, EntityUid user)
@@ -493,6 +517,12 @@ public sealed class LifeInsuranceSystem : EntitySystem
             return;
         }
 
+        if (!_powerReceiver.IsPowered((spawnMachineEnt, default)))
+        {
+            _popup.PopupEntity(Loc.GetString("life-insurance-popup-spawn-unpowered-insured"), ghostUid, ghostUid, PopupType.Medium);
+            return;
+        }
+
         var profile = _ticker.GetPlayerProfile(eventArgs.SenderSession);
         var coords = Transform(spawnMachineEnt).Coordinates;
         // Full job starting gear, then trim to uniform basics; lobby loadout skipped via PlayerSpawnCompleteEvent.
@@ -608,7 +638,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
 
         targets.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
-        var spawnMachines = BuildSpawnMachineList(consoleStation);
+        var spawnMachines = BuildSpawnMachineList();
 
         return new LifeInsuranceConsoleState(
             storedProteins,
@@ -617,18 +647,13 @@ public sealed class LifeInsuranceSystem : EntitySystem
             spawnMachines);
     }
 
-    private List<LifeInsuranceSpawnMachineEntry> BuildSpawnMachineList(EntityUid? consoleStation)
+    private List<LifeInsuranceSpawnMachineEntry> BuildSpawnMachineList()
     {
         var list = new List<LifeInsuranceSpawnMachineEntry>();
-        if (consoleStation == null)
-            return list;
 
         var enumerator = EntityQueryEnumerator<LifeInsuranceSpawnMachineComponent, MetaDataComponent>();
         while (enumerator.MoveNext(out var machineUid, out _, out var meta))
         {
-            if (_station.GetOwningStation(machineUid) != consoleStation)
-                continue;
-
             list.Add(new LifeInsuranceSpawnMachineEntry(GetNetEntity(machineUid), meta.EntityName));
         }
 
@@ -702,8 +727,15 @@ public sealed class LifeInsuranceSystem : EntitySystem
         if (!TryComp<MindComponent>(mindId, out var mind) || mind.Session == null)
             return;
 
-        var spawnReady = !available || MindSpawnMachineReady(mindId);
-        RaiseNetworkEvent(new GhostInsuranceRespawnStatusEvent(available, respawnAt, spawnReady), mind.Session.Channel);
+        if (!available)
+        {
+            RaiseNetworkEvent(new GhostInsuranceRespawnStatusEvent(false, respawnAt, true, true), mind.Session.Channel);
+            return;
+        }
+
+        var bound = MindSpawnMachineReady(mindId);
+        var powered = bound && InsuranceSpawnMachineReceivesPower(mindId);
+        RaiseNetworkEvent(new GhostInsuranceRespawnStatusEvent(true, respawnAt, bound, powered), mind.Session.Channel);
     }
 
     /// <summary>

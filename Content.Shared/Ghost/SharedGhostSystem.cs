@@ -190,14 +190,15 @@ public sealed class GhostInsuranceRespawnStatusEvent : EntityEventArgs
 {
     public readonly bool Available;
     public readonly TimeSpan RespawnAt;
-    /// <summary>False when no valid spawn machine is bound (insurance respawn action must stay disabled).</summary>
-    public readonly bool SpawnMachineReady;
+    public readonly bool SpawnMachineBound;
+    public readonly bool SpawnMachinePowered;
 
-    public GhostInsuranceRespawnStatusEvent(bool available, TimeSpan respawnAt, bool spawnMachineReady = true)
+    public GhostInsuranceRespawnStatusEvent(bool available, TimeSpan respawnAt, bool spawnMachineBound = true, bool spawnMachinePowered = true)
     {
         Available = available;
         RespawnAt = respawnAt;
-        SpawnMachineReady = spawnMachineReady;
+        SpawnMachineBound = spawnMachineBound;
+        SpawnMachinePowered = spawnMachinePowered;
     }
 }
 }
