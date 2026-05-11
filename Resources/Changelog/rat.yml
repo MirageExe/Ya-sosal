@@ -830,5 +830,12 @@ Entries:
     id: 103
     time: '2026-05-11T04:31:11.0000000+00:00'
     url: https://github.com/ss14-art/ratgore/pull/194
+  - author: Gr-avity
+    changes:
+      - type: Remove
+        message: Убраны консоли баунти с Авроры и Татсумото
+    id: 104
+    time: '2026-05-11T14:53:43.0000000+00:00'
+    url: https://github.com/ss14-art/ratgore/pull/199
 Name: Rat
 Order: -1
