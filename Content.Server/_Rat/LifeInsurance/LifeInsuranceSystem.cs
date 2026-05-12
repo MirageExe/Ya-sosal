@@ -12,6 +12,7 @@ using Content.Server.Standing;
 using Content.Server.Station.Systems;
 using Content.Shared._Rat.LifeInsurance;
 using Content.Shared.Access.Systems;
+using Content.Shared.Administration.Logs;
 using Content.Server.Chat.Managers;
 using Content.Server.CartridgeLoader;
 using Content.Shared.Ghost;
@@ -25,6 +26,7 @@ using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
+using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Inventory;
 using Content.Shared.PDA;
@@ -64,6 +66,7 @@ public sealed class LifeInsuranceSystem : EntitySystem
     [Dependency] private readonly LayingDownSystem _layingDown = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly PowerReceiverSystem _powerReceiver = default!;
+    [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
     private TimeSpan _nextGhostSync = TimeSpan.Zero;
 
     /// <summary>
@@ -226,6 +229,10 @@ public sealed class LifeInsuranceSystem : EntitySystem
             ("name", Name(target)));
         TryNotifyPdaOrMind(target, targetMindId, pdaHeader, pdaMessage, Color.LimeGreen);
 
+        var preferredSpawn = life.PreferredSpawnMachine;
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(user):player} issued life insurance at {ToPrettyString(uid):entity} for {ToPrettyString(target):player} ({nextPrice} credits; spawn {ToPrettyString(preferredSpawn):entity})");
+
         UpdateUi(uid, component);
     }
 
@@ -311,6 +318,10 @@ public sealed class LifeInsuranceSystem : EntitySystem
         }
 
         _popup.PopupEntity(Loc.GetString("life-insurance-popup-void-success"), uid, user, PopupType.Small);
+
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(user):player} voided life insurance at {ToPrettyString(uid):entity} for {ToPrettyString(target):player} (hadPending={hadPendingRespawn}, ghost={targetIsGhost})");
+
         UpdateUi(uid, component);
     }
 
@@ -326,6 +337,8 @@ public sealed class LifeInsuranceSystem : EntitySystem
         }
 
         _materialStorage.EjectMaterial(uid, component.ProteinMaterialId);
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(user):player} ejected exotic proteins from {ToPrettyString(uid):entity}");
         UpdateUi(uid, component);
     }
 
@@ -359,6 +372,9 @@ public sealed class LifeInsuranceSystem : EntitySystem
         var life = EnsureComp<LifeInsuranceComponent>(targetMindId);
         life.PreferredSpawnMachine = spawnMachine;
         Dirty(targetMindId, life);
+
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(user):player} set life insurance clone outlet for {ToPrettyString(target):player} to {ToPrettyString(spawnMachine):entity} via {ToPrettyString(uid):entity}");
 
         if (TryComp<MindComponent>(targetMindId, out var mindComp)
             && mindComp.Session != null
@@ -505,11 +521,25 @@ public sealed class LifeInsuranceSystem : EntitySystem
         Dirty(mindId, life);
         PushInsuranceStatusToMind(mindId, true, life.PendingRespawnAt.Value);
 
-        if (TryComp<MindComponent>(mindId, out var mindComp)
-            && mindComp.Session?.AttachedEntity is { } current
-            && TryComp<GhostComponent>(current, out var ghost))
+        var deathOrigin = stationSourceEntity is { } d ? ToPrettyString(d) : "none";
+        if (TryComp<MindComponent>(mindId, out var mindComp))
         {
-            SetInsuranceOnGhost(current, life.PendingRespawnAt.Value, ghost);
+            if (mindComp.Session != null)
+            {
+                _adminLog.Add(LogType.Mind, LogImpact.Medium,
+                    $"Life insurance payout started for {mindComp.Session:player}: job {job}, respawn at {life.PendingRespawnAt}, death context {deathOrigin}");
+            }
+            else
+            {
+                _adminLog.Add(LogType.Mind, LogImpact.Medium,
+                    $"Life insurance payout started for mind {ToPrettyString(mindId):entity}: job {job}, respawn at {life.PendingRespawnAt}, death context {deathOrigin}");
+            }
+
+            if (mindComp.Session?.AttachedEntity is { } current
+                && TryComp<GhostComponent>(current, out var ghost))
+            {
+                SetInsuranceOnGhost(current, life.PendingRespawnAt.Value, ghost);
+            }
         }
     }
 
@@ -617,6 +647,9 @@ public sealed class LifeInsuranceSystem : EntitySystem
         life.RespawnCount++;
         Dirty(mindId, life);
         PushInsuranceStatusToMind(mindId, false, TimeSpan.Zero);
+
+        _adminLog.Add(LogType.Mind, LogImpact.High,
+            $"{eventArgs.SenderSession:player} used life insurance respawn: ghost {ToPrettyString(ghostUid):entity} -> body {ToPrettyString(spawnedUid):entity}, job {job}, outlet {ToPrettyString(spawnMachineEnt):entity}");
     }
 
     private void UpdateUi(EntityUid uid, LifeInsuranceConsoleComponent component)
