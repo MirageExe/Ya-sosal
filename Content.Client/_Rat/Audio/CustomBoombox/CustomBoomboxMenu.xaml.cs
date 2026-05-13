@@ -64,13 +64,13 @@ public sealed partial class CustomBoomboxMenu : FancyWindow
 
     private async Task OnUploadPressedAsync()
     {
-        var result = await _fileDialog.OpenFileWithName(new FileDialogFilters(new FileDialogFilters.Group("ogg")));
-        if (result == null)
+        await using var stream = await _fileDialog.OpenFile(new FileDialogFilters(new FileDialogFilters.Group("ogg")), FileAccess.Read);
+        if (stream == null)
             return;
 
-        await using var stream = result.Value.stream;
+        var fileName = stream is FileStream fs ? Path.GetFileName(fs.Name) : "track.ogg";
         var data = stream.CopyToArray();
-        OnUploadRequested?.Invoke(data, result.Value.fileName);
+        OnUploadRequested?.Invoke(data, fileName);
     }
 
     public void SetAudioStream(EntityUid? audio)

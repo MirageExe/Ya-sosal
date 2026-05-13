@@ -5,13 +5,13 @@ using Content.Shared.Audio.Jukebox;
 using Content.Shared.Interaction;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
-using Robust.Server.Upload;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Robust.Shared.Upload;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Rat.Audio.CustomBoombox;
@@ -22,7 +22,6 @@ public sealed class CustomBoomboxSystem : SharedCustomBoomboxSystem
     private static ReadOnlySpan<byte> OggMagic => "OggS"u8;
 
     [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly NetworkResourceManager _netResources = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly IServerNetManager _net = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -115,7 +114,7 @@ public sealed class CustomBoomboxSystem : SharedCustomBoomboxSystem
 
         component.UploadRevision++;
         var rel = new ResPath($"custom_boombox/b{uid.Id}_{component.UploadRevision}.ogg").ToRelativePath();
-        _netResources.InjectNetworkedResource(rel, msg.Data);
+        _net.ServerSendToAll(new NetworkResourceUploadMessage { RelativePath = rel, Data = msg.Data });
 
         var fullPath = $"/Uploaded/custom_boombox/b{uid.Id}_{component.UploadRevision}.ogg";
         component.SelectedTrackResourcePath = fullPath;
