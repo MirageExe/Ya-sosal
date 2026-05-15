@@ -47,6 +47,9 @@
         - MachineMask
         layer:
           - MachineLayer
+  - type: Anchorable
+    flags:
+    - None
 
 #AUTODISK
 
