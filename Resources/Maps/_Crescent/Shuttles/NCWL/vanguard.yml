@@ -1113,10 +1113,10 @@ entities:
     - type: NamedModules
       buttonNames:
       - Авто-залп из 35mm
-      - -
-      - -
-      - -
-      - -
+      - Module B
+      - Module C
+      - Module D
+      - Module E
 - proto: CrateAluminium
   entities:
   - uid: 107

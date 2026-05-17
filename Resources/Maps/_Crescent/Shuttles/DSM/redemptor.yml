@@ -1323,9 +1323,9 @@ entities:
       buttonNames:
       - Авто-залп из 200cc
       - Авто-запуск ракет 48мм
-      - -
-      - -
-      - -
+      - Module C
+      - Module D
+      - Module E
 - proto: EmergencyLight
   entities:
   - uid: 79

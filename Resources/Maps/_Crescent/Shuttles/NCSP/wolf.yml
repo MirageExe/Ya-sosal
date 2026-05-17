@@ -2550,10 +2550,10 @@ entities:
     - type: NamedModules
       buttonNames:
       - Авто-залп из 300cc
-      - -
-      - -
-      - -
-      - -
+      - Module B
+      - Module C
+      - Module D
+      - Module E
     - type: ContainerContainer
       containers:
         board: !type:Container
