@@ -369,7 +369,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         var visualEnt = CreateExplosionVisualEntity(pos, queued.Proto.ID, spaceMatrix, spaceData, gridData.Values, iterationIntensity);
 
-        SpawnSmoke(queued.Epicenter, 5f, 5); // Ratgore changes
+        SpawnSmoke(queued.Epicenter, 3f, 5); // Ratgore changes
 
         // camera shake
         CameraShake(iterationIntensity.Count * 4f, pos, queued.TotalIntensity);
