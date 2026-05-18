@@ -75,8 +75,6 @@
   - type: Item
     sprite: _Crescent/Objects/Weapons/Melee/mantis_blade.rsi
   - type: MultiHandedItem
-  - type: Reflect
-    reflectProb: 0.30
 
 - type: entity
   name: machete
