@@ -1,0 +1,25 @@
+- type: entity
+  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible]
+  id: ComputerYoutubeScreen
+  name: ent-ComputerYoutubeScreen
+  description: ent-ComputerYoutubeScreen.desc
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: YoutubeScreen
+      displaySize: 800, 450
+    - type: Sprite
+      sprite: Structures/Wallmounts/screen.rsi
+      drawdepth: WallMountedItems
+      noRot: true
+      layers:
+        - state: screen
+    - type: Transform
+      anchored: true
+    - type: WallMount
+      arc: 360
+    - type: InteractionOutline
+    - type: Clickable
+    - type: ApcPowerReceiver
+      powerLoad: 250
+    - type: ExtensionCableReceiver
