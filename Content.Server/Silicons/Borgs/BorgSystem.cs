@@ -25,6 +25,7 @@ using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Throwing;
 using Content.Shared.Whitelist;
 using Content.Shared.Wires;
+using Content.Server._Rat.Silicons.Borgs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Player;
@@ -56,6 +57,7 @@ public sealed partial class BorgSystem : SharedBorgSystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly BorgAiBrainSystem _borgAiBrain = default!;
 
 
     [ValidatePrototypeId<JobPrototype>]
@@ -176,11 +178,13 @@ public sealed partial class BorgSystem : SharedBorgSystem
     private void OnMindAdded(EntityUid uid, BorgChassisComponent component, MindAddedMessage args)
     {
         BorgActivate(uid, component);
+        _borgAiBrain.OnChassisMindAdded(uid);
     }
 
     private void OnMindRemoved(EntityUid uid, BorgChassisComponent component, MindRemovedMessage args)
     {
         BorgDeactivate(uid, component);
+        _borgAiBrain.OnChassisMindRemoved(uid, component);
     }
 
     private void OnMobStateChanged(EntityUid uid, BorgChassisComponent component, MobStateChangedEvent args)

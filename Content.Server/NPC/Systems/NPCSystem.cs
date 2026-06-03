@@ -7,6 +7,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
+using Content.Shared._Rat.Silicons.Borgs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
@@ -252,6 +253,15 @@ namespace Content.Server.NPC.Systems
                 if (HasComp<ActorComponent>(npcUid) ||
                     TryComp<MindContainerComponent>(npcUid, out var mindContainer) && mindContainer.HasMind)
                     continue;
+
+                // Autonomous cyborgs must stay awake to execute orders.
+                if (HasComp<BorgAiCommandComponent>(npcUid))
+                {
+                    if (!IsAwake(npcUid, htn))
+                        WakeNPC(npcUid, htn);
+                    continue;
+                }
+
                 if (_mobState.IsIncapacitated(npcUid))
                     continue;
 

@@ -1,0 +1,11 @@
+- type: entity
+  parent: PositronicBrain
+  id: BorgAiBrain
+  name: autonomous positronic brain
+  description: A positronic brain running a shipboard tactical AI. Installs into cyborgs for autonomous operation.
+  suffix: AI
+  components:
+  - type: BorgAiBrain
+  - type: Tag
+    tags:
+    - Brain

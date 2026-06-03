@@ -1,0 +1,115 @@
+- type: htnCompound
+  id: BorgAiCompound
+  branches:
+    - preconditions:
+        - !type:HasBorgAiOrderPrecondition
+          order: Disassemble
+      tasks:
+        - !type:HTNCompoundTask
+          task: BorgDisassembleCompound
+    - preconditions:
+        - !type:HasBorgAiOrderPrecondition
+          order: Heal
+      tasks:
+        - !type:HTNCompoundTask
+          task: BorgHealCompound
+    - preconditions:
+        - !type:HasBorgAiOrderPrecondition
+          order: Solve
+      tasks:
+        - !type:HTNCompoundTask
+          task: BorgSolveCompound
+    - preconditions:
+        - !type:HasBorgAiOrderPrecondition
+          order: Defend
+      tasks:
+        - !type:HTNCompoundTask
+          task: BorgDefendCompound
+    - preconditions:
+        - !type:HasBorgAiOrderPrecondition
+          order: Gather
+      tasks:
+        - !type:HTNCompoundTask
+          task: BorgGatherCompound
+    - tasks:
+        - !type:HTNCompoundTask
+          task: IdleCompound
+
+- type: htnCompound
+  id: BorgDisassembleCompound
+  branches:
+    - preconditions:
+        - !type:KeyExistsPrecondition
+          key: BorgAiTarget
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgResolveTargetOperator
+            targetKey: BorgAiTarget
+            coordinatesKey: TargetCoordinates
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+            targetKey: TargetCoordinates
+            rangeKey: InteractRange
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgDisassembleOperator
+            targetKey: BorgAiTarget
+
+- type: htnCompound
+  id: BorgHealCompound
+  branches:
+    - preconditions:
+        - !type:KeyExistsPrecondition
+          key: BorgAiTarget
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgResolveTargetOperator
+            targetKey: BorgAiTarget
+            coordinatesKey: TargetCoordinates
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+            targetKey: TargetCoordinates
+            rangeKey: InteractRange
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgHealOperator
+            targetKey: BorgAiTarget
+
+- type: htnCompound
+  id: BorgSolveCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgResolveTargetOperator
+            targetKey: BorgAiTarget
+            coordinatesKey: TargetCoordinates
+        - !type:HTNPrimitiveTask
+          operator: !type:MoveToOperator
+            pathfindInPlanning: false
+            targetKey: TargetCoordinates
+            rangeKey: InteractRange
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgSolveOperator
+            targetKey: BorgAiTarget
+
+- type: htnCompound
+  id: BorgDefendCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgResolveTargetOperator
+            targetKey: BorgAiTarget
+            coordinatesKey: TargetCoordinates
+        - !type:HTNCompoundTask
+          task: RatServantCombatCompound
+    - tasks:
+        - !type:HTNCompoundTask
+          task: IdleCompound
+
+- type: htnCompound
+  id: BorgGatherCompound
+  branches:
+    - tasks:
+        - !type:HTNPrimitiveTask
+          operator: !type:BorgGatherOperator
+            targetKey: BorgAiTarget
