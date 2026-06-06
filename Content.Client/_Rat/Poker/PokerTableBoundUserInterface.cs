@@ -25,6 +25,9 @@ public sealed class PokerTableBoundUserInterface : BoundUserInterface
         _window.OnBet += amount => SendMessage(new PokerBetMessage(amount));
         _window.OnRaise += amount => SendMessage(new PokerRaiseMessage(amount));
         _window.OnStartGame += () => SendMessage(new PokerStartGameMessage());
+        _window.OnContinueGame += () => SendMessage(new PokerContinueGameMessage());
+        _window.OnEndGame += () => SendMessage(new PokerEndGameMessage());
+        _window.OnRebuy += amount => SendMessage(new PokerRebuyMessage(amount));
 
         _window.OpenCentered();
     }

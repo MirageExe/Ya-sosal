@@ -29,6 +29,7 @@ public sealed class PokerTableBoundUserInterfaceState : BoundUserInterfaceState
     public bool IsMyTurn { get; set; }
     public int MySeatIndex { get; set; }
     public int BigBlind { get; set; }
+    public int StartingBuyIn { get; set; }
     public string? WinnerName { get; set; }
     public string? WinningHand { get; set; }
     public NetEntity? CurrentTurnEntity { get; set; }
@@ -73,3 +74,20 @@ public sealed class PokerRaiseMessage : BoundUserInterfaceMessage
 
 [Serializable, NetSerializable]
 public sealed class PokerStartGameMessage : BoundUserInterfaceMessage { }
+
+[Serializable, NetSerializable]
+public sealed class PokerContinueGameMessage : BoundUserInterfaceMessage { }
+
+[Serializable, NetSerializable]
+public sealed class PokerEndGameMessage : BoundUserInterfaceMessage { }
+
+[Serializable, NetSerializable]
+public sealed class PokerRebuyMessage : BoundUserInterfaceMessage
+{
+    public int Amount { get; set; }
+
+    public PokerRebuyMessage(int amount)
+    {
+        Amount = amount;
+    }
+}

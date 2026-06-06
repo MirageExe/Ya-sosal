@@ -1,69 +1,232 @@
 <poker:PokerTableWindow xmlns="https://spacestation14.io"
                        xmlns:poker="clr-namespace:Content.Client._Rat.Poker"
                        Title="Texas Hold'em"
-                       MinSize="1200 840">
+                       MinSize="1300 800">
   <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
 
-    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="6,4" SeparationOverride="12">
-      <Label Name="PhaseLabel" Text="Waiting" FontColorOverride="#AAAAAA"/>
-      <Label Name="PotLabel" Text="  |  Pot: 0" FontColorOverride="#FFD700"/>
-      <Label Name="MyStackLabel" Text="  |  Stack: 0" FontColorOverride="#CCFFCC"/>
-      <Label Name="MyBetLabel" Text="  |  Bet: 0" FontColorOverride="#FFCCAA"/>
-    </BoxContainer>
+    <!-- Top Status Bar -->
+    <PanelContainer Margin="6,4" HorizontalExpand="True">
+      <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="8,6" SeparationOverride="16">
+        <Label Name="PhaseLabel" Text="Waiting" FontColorOverride="#FFFFFF" StyleClasses="LabelHeading"/>
+        <Label Name="PotLabel" Text="Pot: 0" FontColorOverride="#FFD700" StyleClasses="LabelHeading"/>
+        <Label Name="MyStackLabel" Text="Stack: 0" FontColorOverride="#00FF88" StyleClasses="LabelHeading"/>
+        <Label Name="MyBetLabel" Text="Bet: 0" FontColorOverride="#FF9966" StyleClasses="LabelHeading"/>
+        <Label Name="TimerLabel" Text="" FontColorOverride="#FFAA00" StyleClasses="LabelHeading"/>
+      </BoxContainer>
+    </PanelContainer>
 
     <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
 
-      <BoxContainer Orientation="Vertical" MinWidth="200" VerticalExpand="True" Margin="4,0">
-        <BoxContainer Name="Seat0Container" Orientation="Vertical" Margin="4" MinHeight="160" VerticalExpand="True"/>
-        <BoxContainer Name="Seat1Container" Orientation="Vertical" Margin="4" MinHeight="160" VerticalExpand="True"/>
+      <!-- Left Seats -->
+      <BoxContainer Orientation="Vertical" MinWidth="220" VerticalExpand="True" Margin="4,0">
+        <BoxContainer Name="Seat0Container" Orientation="Vertical" Margin="4" MinHeight="180" VerticalExpand="True"/>
+        <BoxContainer Name="Seat1Container" Orientation="Vertical" Margin="4" MinHeight="180" VerticalExpand="True"/>
       </BoxContainer>
 
+      <!-- Center Area -->
       <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
 
-        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4" SeparationOverride="8">
-          <BoxContainer Name="Seat2Container" Orientation="Vertical" Margin="4" MinWidth="180" MinHeight="160"/>
-          <BoxContainer Name="Seat3Container" Orientation="Vertical" Margin="4" MinWidth="180" MinHeight="160"/>
+        <!-- Top Seats -->
+        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4" SeparationOverride="12">
+          <BoxContainer Name="Seat2Container" Orientation="Vertical" Margin="4" MinWidth="200" MinHeight="180"/>
+          <BoxContainer Name="Seat3Container" Orientation="Vertical" Margin="4" MinWidth="200" MinHeight="180"/>
         </BoxContainer>
 
-        <PanelContainer Name="TableFelt" VerticalExpand="True" Margin="8,4" HorizontalExpand="True">
+        <!-- Table Felt with Enhanced Decoration -->
+        <PanelContainer Name="TableFelt" VerticalExpand="True" Margin="12,8" HorizontalExpand="True">
           <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Label Name="CommunityLabel" Text="COMMUNITY CARDS" HorizontalAlignment="Center" FontColorOverride="#88BB88" Margin="0,8,0,6"/>
-            <BoxContainer Name="CommunityCardsContainer" Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="8" Margin="8"/>
-            <BoxContainer Name="WinnerPanel" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,6,0,4">
-              <Label Name="WinnerLabel" Text="" HorizontalAlignment="Center" FontColorOverride="#FFD700" Margin="2"/>
-              <Label Name="WinningHandLabel" Text="" HorizontalAlignment="Center" FontColorOverride="#AADDAA" Margin="2"/>
+            <!-- Decorative Top Border -->
+            <PanelContainer HorizontalExpand="True" Margin="0,8,0,4">
+              <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="16,4">
+                <Label Text="♠" FontColorOverride="#666666" Margin="8,0"/>
+                <Label Text="♥" FontColorOverride="#AA4444" Margin="8,0"/>
+                <Label Text="♦" FontColorOverride="#AA4444" Margin="8,0"/>
+                <Label Text="♣" FontColorOverride="#666666" Margin="8,0"/>
+              </BoxContainer>
+            </PanelContainer>
+            
+            <Label Name="CommunityLabel" Text="COMMUNITY CARDS" HorizontalAlignment="Center" FontColorOverride="#AAFFAA" Margin="0,8,0,12" StyleClasses="LabelKeyText"/>
+            <BoxContainer Name="CommunityCardsContainer" Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="12" Margin="16"/>
+            
+            <!-- Decorative Chip Stack -->
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,8">
+              <Label Text="₵" FontColorOverride="#FFD700" StyleClasses="LabelHeading"/>
+              <Label Name="TablePotLabel" Text="0" FontColorOverride="#FFD700" StyleClasses="LabelHeading"/>
+              <Label Text="₵" FontColorOverride="#FFD700" StyleClasses="LabelHeading"/>
+            </BoxContainer>
+            
+            <!-- Winner Panel with Enhanced Decoration -->
+            <BoxContainer Name="WinnerPanel" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,16,0,12" Visible="False">
+              <PanelContainer Margin="12,6">
+                <BoxContainer Orientation="Vertical" Margin="16,12">
+                  <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+                    <Label Text="🏆" FontColorOverride="#FFD700" Margin="0,0,8,0"/>
+                    <Label Name="WinnerLabel" Text="WINNER!" HorizontalAlignment="Center" FontColorOverride="#FFD700" StyleClasses="LabelHeading"/>
+                    <Label Text="🏆" FontColorOverride="#FFD700" Margin="8,0,0,0"/>
+                  </BoxContainer>
+                  <Label Name="WinningHandLabel" Text="" HorizontalAlignment="Center" FontColorOverride="#AAFFAA" StyleClasses="LabelKeyText"/>
+                </BoxContainer>
+              </PanelContainer>
+            </BoxContainer>
+
+            <!-- Game Control Panel with Enhanced Styling -->
+            <BoxContainer Name="GameControlPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,8" SeparationOverride="12" Visible="False">
+              <Button Name="ContinueButton" Text="Continue Game" StyleClasses="Caution" MinWidth="140"/>
+              <Button Name="EndButton" Text="End Game" StyleClasses="Danger" MinWidth="140"/>
+            </BoxContainer>
+            
+            <!-- Decorative Bottom Border -->
+            <PanelContainer HorizontalExpand="True" Margin="0,4,0,8">
+              <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="16,4">
+                <Label Text="♣" FontColorOverride="#666666" Margin="8,0"/>
+                <Label Text="♦" FontColorOverride="#AA4444" Margin="8,0"/>
+                <Label Text="♥" FontColorOverride="#AA4444" Margin="8,0"/>
+                <Label Text="♠" FontColorOverride="#666666" Margin="8,0"/>
+              </BoxContainer>
+            </PanelContainer>
+          </BoxContainer>
+        </PanelContainer>
+
+        <!-- Bottom Seats -->
+        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4" SeparationOverride="12">
+          <BoxContainer Name="Seat4Container" Orientation="Vertical" Margin="4" MinWidth="200" MinHeight="180"/>
+          <BoxContainer Name="Seat5Container" Orientation="Vertical" Margin="4" MinWidth="200" MinHeight="180"/>
+        </BoxContainer>
+
+      </BoxContainer>
+
+      <!-- Right Control Panel -->
+      <BoxContainer Orientation="Vertical" MinWidth="300" VerticalExpand="True" Margin="4,0">
+
+        <!-- Hand Panel with Enhanced Decoration -->
+        <PanelContainer Name="HandPanel" Margin="4,4,4,6">
+          <BoxContainer Orientation="Vertical" Margin="8">
+            <!-- Decorative Header -->
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,8">
+              <Label Text="🂡" FontColorOverride="#AAFFAA" Margin="0,0,8,0"/>
+              <Label Name="HandLabel" Text="YOUR HAND" HorizontalAlignment="Center" FontColorOverride="#AAFFAA" StyleClasses="LabelKeyText"/>
+              <Label Text="🂱" FontColorOverride="#AAFFAA" Margin="8,0,0,0"/>
+            </BoxContainer>
+            <BoxContainer Name="MyCardsContainer" Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="10"/>
+            
+            <!-- Hand Strength Indicator with Enhanced Styling -->
+            <BoxContainer Name="HandStrengthPanel" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,12,0,8" Visible="False">
+              <PanelContainer Margin="8,4">
+                <BoxContainer Orientation="Horizontal" Margin="8,4">
+                  <Label Text="⚡" FontColorOverride="#FFD700" Margin="0,0,4,0"/>
+                  <Label Name="HandStrengthLabel" Text="High Card" HorizontalAlignment="Center" FontColorOverride="#FFD700" StyleClasses="LabelKeyText"/>
+                  <Label Text="⚡" FontColorOverride="#FFD700" Margin="4,0,0,0"/>
+                </BoxContainer>
+              </PanelContainer>
             </BoxContainer>
           </BoxContainer>
         </PanelContainer>
 
-        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4" SeparationOverride="8">
-          <BoxContainer Name="Seat4Container" Orientation="Vertical" Margin="4" MinWidth="180" MinHeight="160"/>
-          <BoxContainer Name="Seat5Container" Orientation="Vertical" Margin="4" MinWidth="180" MinHeight="160"/>
-        </BoxContainer>
-
-      </BoxContainer>
-
-      <BoxContainer Orientation="Vertical" MinWidth="260" VerticalExpand="True" Margin="4,0">
-
-        <PanelContainer Name="HandPanel" Margin="4,4,4,6">
+        <!-- Action Buttons with Enhanced Decoration -->
+        <PanelContainer Margin="4,2">
           <BoxContainer Orientation="Vertical" Margin="6">
-            <Label Name="HandLabel" Text="YOUR HAND" HorizontalAlignment="Center" FontColorOverride="#88BB88" Margin="0,2,0,6"/>
-            <BoxContainer Name="MyCardsContainer" Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="6"/>
+            <!-- Decorative Header -->
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+              <Label Text="⚙️" FontColorOverride="#CCCCCC" Margin="0,0,8,0"/>
+              <Label Text="ACTIONS" HorizontalAlignment="Center" FontColorOverride="#CCCCCC" StyleClasses="LabelSubText"/>
+              <Label Text="⚙️" FontColorOverride="#CCCCCC" Margin="8,0,0,0"/>
+            </BoxContainer>
+            
+            <Button Name="JoinButton" Text="Join Table" HorizontalExpand="True" Margin="0,2" StyleClasses="OpenRight"/>
+            <Button Name="LeaveButton" Text="Leave Table" HorizontalExpand="True" Margin="0,2" StyleClasses="CloseRight"/>
+            <Button Name="StartButton" Text="Start Game" HorizontalExpand="True" Margin="0,2" StyleClasses="Confirm"/>
+            
+            <!-- In-Game Actions -->
+            <BoxContainer Name="InGameActions" Orientation="Vertical" Visible="False">
+              <!-- Action Separator -->
+              <PanelContainer HorizontalExpand="True" Margin="8,4" MinHeight="2">
+                <BoxContainer HorizontalAlignment="Center">
+                  <Label Text="🎰" FontColorOverride="#FFD700"/>
+                </BoxContainer>
+              </PanelContainer>
+              
+              <Button Name="FoldButton" Text="Fold" HorizontalExpand="True" Margin="0,4,0,2" StyleClasses="Danger"/>
+              <Button Name="CheckButton" Text="Check" HorizontalExpand="True" Margin="0,2" StyleClasses="OpenRight"/>
+              <Button Name="CallButton" Text="Call (0)" HorizontalExpand="True" Margin="0,2" StyleClasses="Caution"/>
+              
+              <!-- Bet/Raise Controls with Enhanced Styling -->
+              <BoxContainer Orientation="Vertical" Margin="0,8,0,4">
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,4">
+                  <Label Text="💰" FontColorOverride="#FFD700" Margin="0,0,4,0"/>
+                  <Label Text="BETTING" FontColorOverride="#CCCCCC" StyleClasses="LabelSubText"/>
+                  <Label Text="💰" FontColorOverride="#FFD700" Margin="4,0,0,0"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0,2" SeparationOverride="6">
+                  <Button Name="BetRaiseButton" Text="Bet" HorizontalExpand="True" StyleClasses="Confirm"/>
+                  <SpinBox Name="BetAmountSpinBox" MinWidth="100" HorizontalExpand="True"/>
+                </BoxContainer>
+                <Slider Name="BetSlider" HorizontalExpand="True" Margin="0,2"/>
+              </BoxContainer>
+              
+              <!-- Quick Bet Buttons with Icons -->
+              <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0,6,0,2" SeparationOverride="4">
+                <Button Name="QuickBet1Button" Text="½ Pot" HorizontalExpand="True"/>
+                <Button Name="QuickBet2Button" Text="¾ Pot" HorizontalExpand="True"/>
+                <Button Name="QuickBet3Button" Text="Pot" HorizontalExpand="True"/>
+                <Button Name="AllInButton" Text="All In" HorizontalExpand="True" StyleClasses="Danger"/>
+              </BoxContainer>
+            </BoxContainer>
+            
+            <!-- Rebuy Controls with Enhanced Styling -->
+            <BoxContainer Name="RebuyPanel" Orientation="Vertical" Visible="False">
+              <PanelContainer HorizontalExpand="True" Margin="8,4" MinHeight="2">
+                <BoxContainer HorizontalAlignment="Center">
+                  <Label Text="💳" FontColorOverride="#00FF88"/>
+                </BoxContainer>
+              </PanelContainer>
+              <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,4">
+                <Label Text="💳" FontColorOverride="#00FF88" Margin="0,0,4,0"/>
+                <Label Text="REBUY" HorizontalAlignment="Center" FontColorOverride="#CCCCCC" StyleClasses="LabelSubText"/>
+                <Label Text="💳" FontColorOverride="#00FF88" Margin="4,0,0,0"/>
+              </BoxContainer>
+              <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0,2" SeparationOverride="6">
+                <SpinBox Name="RebuySpinBox" MinWidth="100" HorizontalExpand="True"/>
+                <Button Name="RebuyButton" Text="Rebuy" HorizontalExpand="True" StyleClasses="Confirm"/>
+              </BoxContainer>
+            </BoxContainer>
           </BoxContainer>
         </PanelContainer>
 
-        <Button Name="JoinButton" Text="Join Table" HorizontalExpand="True" Margin="4,2"/>
-        <Button Name="LeaveButton" Text="Leave Table" HorizontalExpand="True" Margin="4,2"/>
-        <Button Name="StartButton" Text="Start Game" HorizontalExpand="True" Margin="4,2"/>
-        <Button Name="FoldButton" Text="Fold" HorizontalExpand="True" Margin="4,2"/>
-        <Button Name="CheckButton" Text="Check" HorizontalExpand="True" Margin="4,2"/>
-        <Button Name="CallButton" Text="Call (0)" HorizontalExpand="True" Margin="4,2"/>
-
-        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="4,6,4,2" SeparationOverride="4">
-          <Button Name="BetRaiseButton" Text="Bet" HorizontalExpand="True"/>
-          <SpinBox Name="BetAmountSpinBox" MinWidth="75"/>
-        </BoxContainer>
-        <Slider Name="BetSlider" HorizontalExpand="True" Margin="4,2"/>
+        <!-- Statistics Panel with Enhanced Decoration -->
+        <PanelContainer Margin="4,2" VerticalExpand="True">
+          <BoxContainer Orientation="Vertical" Margin="6">
+            <!-- Decorative Header -->
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+              <Label Text="📊" FontColorOverride="#CCCCCC" Margin="0,0,8,0"/>
+              <Label Text="STATISTICS" HorizontalAlignment="Center" FontColorOverride="#CCCCCC" StyleClasses="LabelSubText"/>
+              <Label Text="📊" FontColorOverride="#CCCCCC" Margin="8,0,0,0"/>
+            </BoxContainer>
+            
+            <!-- Stats Content with Enhanced Styling -->
+            <PanelContainer VerticalExpand="True" Margin="4">
+              <BoxContainer Orientation="Vertical" VerticalExpand="True" Margin="8">
+                <!-- Decorative Elements -->
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+                  <Label Text="🎯" FontColorOverride="#FFD700" Margin="4,0"/>
+                  <Label Text="🎲" FontColorOverride="#FF6B6B" Margin="4,0"/>
+                  <Label Text="🃏" FontColorOverride="#4ECDC4" Margin="4,0"/>
+                  <Label Text="💎" FontColorOverride="#A8E6CF" Margin="4,0"/>
+                </BoxContainer>
+                
+                <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalAlignment="Center">
+                  <Label Name="StatsLabel" Text="No games played yet" HorizontalAlignment="Center" FontColorOverride="#AAAAAA" Margin="4"/>
+                </BoxContainer>
+                
+                <!-- Decorative Footer -->
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                  <Label Text="⭐" FontColorOverride="#FFD700" Margin="4,0"/>
+                  <Label Text="🏆" FontColorOverride="#FFD700" Margin="4,0"/>
+                  <Label Text="⭐" FontColorOverride="#FFD700" Margin="4,0"/>
+                </BoxContainer>
+              </BoxContainer>
+            </PanelContainer>
+          </BoxContainer>
+        </PanelContainer>
 
       </BoxContainer>
     </BoxContainer>

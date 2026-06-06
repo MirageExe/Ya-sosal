@@ -1,4 +1,6 @@
 using System.Linq;
+using Content.Server.Bank;
+using Content.Shared.Bank.Components;
 using Content.Shared._Rat.Poker;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
@@ -19,6 +21,7 @@ public sealed class PokerTableSystem : EntitySystem
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedStackSystem _stack = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly BankSystem _bank = default!;
 
     public override void Initialize()
     {
@@ -34,6 +37,9 @@ public sealed class PokerTableSystem : EntitySystem
         SubscribeLocalEvent<PokerTableComponent, PokerBetMessage>(OnBet);
         SubscribeLocalEvent<PokerTableComponent, PokerRaiseMessage>(OnRaise);
         SubscribeLocalEvent<PokerTableComponent, PokerStartGameMessage>(OnStartGame);
+        SubscribeLocalEvent<PokerTableComponent, PokerContinueGameMessage>(OnContinueGame);
+        SubscribeLocalEvent<PokerTableComponent, PokerEndGameMessage>(OnEndGame);
+        SubscribeLocalEvent<PokerTableComponent, PokerRebuyMessage>(OnRebuy);
     }
 
     private void OnUiOpened(EntityUid uid, PokerTableComponent comp, BoundUIOpenedEvent args)
@@ -57,12 +63,13 @@ public sealed class PokerTableSystem : EntitySystem
         if (comp.Phase != PokerRoundPhase.Waiting)
             return;
 
-        var balance = ScanPlayerCash(msg.Actor);
+        var balance = GetPlayerBankBalance(msg.Actor);
         if (balance <= 0)
             return;
 
         var buyIn = Math.Min(balance, comp.StartingBuyIn);
-        TakeCash(msg.Actor, buyIn);
+        if (!_bank.TryBankWithdraw(msg.Actor, buyIn))
+            return;
 
         var name = Name(msg.Actor);
         var player = new PokerPlayer
@@ -86,7 +93,10 @@ public sealed class PokerTableSystem : EntitySystem
     private void RemovePlayer(EntityUid uid, PokerTableComponent comp, PokerPlayer player)
     {
         if (player.Stack > 0)
-            GiveCash(player.Entity, player.Stack);
+        {
+            // Deposit remaining stack back to player's bank account
+            _bank.TryBankDeposit(player.Entity, player.Stack);
+        }
 
         comp.Players.Remove(player);
 
@@ -390,10 +400,12 @@ public sealed class PokerTableSystem : EntitySystem
         {
             winner.Stack += comp.Pot;
             winner.Status = PokerPlayerStatus.Winner;
+            comp.WinnerName = winner.Name;
+            comp.WinningHand = bestRank.ToString();
         }
 
         comp.Pot = 0;
-        SendState(uid, comp, winner?.Name, bestRank.ToString());
+        SendState(uid, comp);
 
         var uid2 = uid;
         Timer.Spawn(5000, () =>
@@ -439,8 +451,7 @@ public sealed class PokerTableSystem : EntitySystem
         SendState(uid, comp);
     }
 
-    private void SendState(EntityUid uid, PokerTableComponent comp,
-        string? winnerName = null, string? winningHand = null)
+    private void SendState(EntityUid uid, PokerTableComponent comp)
     {
         // Determine whose turn it is
         NetEntity? currentTurnEntity = null;
@@ -479,8 +490,9 @@ public sealed class PokerTableSystem : EntitySystem
             IsMyTurn = false,
             MySeatIndex = -1,
             BigBlind = comp.BigBlind,
-            WinnerName = winnerName,
-            WinningHand = winningHand,
+            StartingBuyIn = comp.StartingBuyIn,
+            WinnerName = comp.WinnerName,
+            WinningHand = comp.WinningHand,
             CurrentTurnEntity = currentTurnEntity
         };
 
@@ -674,5 +686,62 @@ public sealed class PokerTableSystem : EntitySystem
                 combo.AddRange(rest);
                 yield return combo;
             }
+    }
+
+    private void OnContinueGame(EntityUid uid, PokerTableComponent comp, PokerContinueGameMessage msg)
+    {
+        if (!string.IsNullOrEmpty(comp.WinnerName))
+        {
+            // Continue with same players
+            comp.WinnerName = null;
+            comp.WinningHand = null;
+            StartNewRound(uid, comp);
+        }
+    }
+
+    private void OnEndGame(EntityUid uid, PokerTableComponent comp, PokerEndGameMessage msg)
+    {
+        // Return all money to players and reset
+        foreach (var player in comp.Players)
+        {
+            if (player.Stack > 0)
+            {
+                _bank.TryBankDeposit(player.Entity, player.Stack);
+            }
+        }
+        
+        comp.Players.Clear();
+        comp.Phase = PokerRoundPhase.Waiting;
+        comp.Pot = 0;
+        comp.CommunityCards.Clear();
+        comp.Deck.Clear();
+        SendState(uid, comp);
+    }
+
+    private void OnRebuy(EntityUid uid, PokerTableComponent comp, PokerRebuyMessage msg)
+    {
+        if (comp.Phase != PokerRoundPhase.Waiting)
+            return;
+
+        var player = comp.Players.FirstOrDefault(p => p.Entity == msg.Actor);
+        if (player == null)
+            return;
+
+        var balance = GetPlayerBankBalance(msg.Actor);
+        if (balance < msg.Amount)
+            return;
+
+        if (!_bank.TryBankWithdraw(msg.Actor, msg.Amount))
+            return;
+
+        player.Stack += msg.Amount;
+        SendState(uid, comp);
+    }
+
+    private int GetPlayerBankBalance(EntityUid player)
+    {
+        if (TryComp<BankAccountComponent>(player, out var bank))
+            return (int)bank.Balance;
+        return 0;
     }
 }

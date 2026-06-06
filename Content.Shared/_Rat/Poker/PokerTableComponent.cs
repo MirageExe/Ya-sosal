@@ -31,6 +31,8 @@ public sealed partial class PokerTableComponent : Component
     public PokerRoundPhase Phase { get; set; } = PokerRoundPhase.Waiting;
     public int LastRaiseAmount { get; set; }
     public int RoundNumber { get; set; }
+    public string? WinnerName { get; set; }
+    public string? WinningHand { get; set; }
 }
 
 public sealed class PokerPlayer

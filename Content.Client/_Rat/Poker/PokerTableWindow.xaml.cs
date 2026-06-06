@@ -25,6 +25,9 @@ public sealed partial class PokerTableWindow : DefaultWindow
     public event Action<int>? OnBet;
     public event Action<int>? OnRaise;
     public event Action? OnStartGame;
+    public event Action? OnContinueGame;
+    public event Action? OnEndGame;
+    public event Action<int>? OnRebuy;
 
     private PokerTableBoundUserInterfaceState? _lastState;
     private RSI? _cardRsi;
@@ -32,9 +35,9 @@ public sealed partial class PokerTableWindow : DefaultWindow
     private const string CardRsiPath = "/Textures/EstacaoPirata/Objects/Misc/cards.rsi";
     private const string CardBackState = "singlecard_down_nanotrasen";
 
-    // Card sizes  (RSI is 32x32 — scale 3x / 2x)
-    private static readonly Vector2 BigCard = new(96, 96);
-    private static readonly Vector2 SmallCard = new(64, 64);
+    // Card sizes  (RSI is 32x32 — scale 4x / 3x)
+    private static readonly Vector2 BigCard = new(128, 128);
+    private static readonly Vector2 SmallCard = new(96, 96);
 
     // Drag state for hole cards
     private int _dragIndex = -1;
@@ -50,6 +53,23 @@ public sealed partial class PokerTableWindow : DefaultWindow
         FoldButton.OnPressed += _ => OnFold?.Invoke();
         CheckButton.OnPressed += _ => OnCheck?.Invoke();
         CallButton.OnPressed += _ => OnCall?.Invoke();
+        
+        // New game control buttons
+        ContinueButton.OnPressed += _ => OnContinueGame?.Invoke();
+        EndButton.OnPressed += _ => OnEndGame?.Invoke();
+        
+        // Quick bet buttons
+        QuickBet1Button.OnPressed += _ => SetQuickBetAmount(0.5f);
+        QuickBet2Button.OnPressed += _ => SetQuickBetAmount(0.75f);
+        QuickBet3Button.OnPressed += _ => SetQuickBetAmount(1.0f);
+        AllInButton.OnPressed += _ => SetAllIn();
+        
+        // Rebuy button
+        RebuyButton.OnPressed += _ =>
+        {
+            var amount = RebuySpinBox.Value;
+            OnRebuy?.Invoke(amount);
+        };
 
         BetRaiseButton.OnPressed += _ =>
         {
@@ -74,6 +94,7 @@ public sealed partial class PokerTableWindow : DefaultWindow
         };
 
         WinnerPanel.Visible = false;
+        GameControlPanel.Visible = false;
 
         // Localize buttons and labels
         var loc = IoCManager.Resolve<ILocalizationManager>();
@@ -85,6 +106,11 @@ public sealed partial class PokerTableWindow : DefaultWindow
         BetRaiseButton.Text = loc.GetString("poker-btn-bet");
         CommunityLabel.Text = loc.GetString("poker-label-community");
         HandLabel.Text = loc.GetString("poker-label-your-hand");
+        
+        // Additional localization
+        ContinueButton.Text = loc.GetString("poker-btn-continue");
+        EndButton.Text = loc.GetString("poker-btn-end");
+        RebuyButton.Text = loc.GetString("poker-btn-rebuy");
 
         // Style the felt and panels
         TableFelt.PanelOverride = new StyleBoxFlat
@@ -113,7 +139,8 @@ public sealed partial class PokerTableWindow : DefaultWindow
         _lastState = state;
 
         var loc = IoCManager.Resolve<ILocalizationManager>();
-        PotLabel.Text = $"  |  {loc.GetString("poker-pot", ("amount", state.Pot))}";
+        PotLabel.Text = loc.GetString("poker-pot", ("amount", state.Pot));
+        TablePotLabel.Text = state.Pot.ToString();
         MyStackLabel.Text = $"  |  {loc.GetString("poker-stack", ("amount", state.MyStack))}";
         MyBetLabel.Text = $"  |  {loc.GetString("poker-bet", ("amount", state.MyBet))}";
         PhaseLabel.Text = loc.GetString($"poker-phase-{state.Phase.ToString().ToLower()}");
@@ -138,16 +165,38 @@ public sealed partial class PokerTableWindow : DefaultWindow
         var inGame = state.Phase != PokerRoundPhase.Waiting;
         var isMyTurn = state.IsMyTurn && inGame;
         var seated = state.MySeatIndex >= 0;
+        var canRebuy = seated && !inGame;
 
         JoinButton.Visible = !seated;
         LeaveButton.Visible = seated;
-        StartButton.Visible = !inGame && seated;
+        StartButton.Visible = !inGame && seated && state.Players.Count >= 2;
+        
+        // In-game actions panel
+        InGameActions.Visible = seated && inGame;
         FoldButton.Visible = isMyTurn;
         CheckButton.Visible = isMyTurn && callAmount == 0;
         CallButton.Visible = isMyTurn && callAmount > 0;
         BetRaiseButton.Visible = isMyTurn;
         BetSlider.Visible = isMyTurn;
         BetAmountSpinBox.Visible = isMyTurn;
+        
+        // Quick bet buttons
+        QuickBet1Button.Visible = isMyTurn;
+        QuickBet2Button.Visible = isMyTurn;
+        QuickBet3Button.Visible = isMyTurn;
+        AllInButton.Visible = isMyTurn;
+        
+        // Rebuy panel
+        RebuyPanel.Visible = canRebuy;
+        RebuySpinBox.IsValid = v => v > 0 && v <= 10000; // Max rebuy limit
+        if (RebuySpinBox.Value <= 0)
+            RebuySpinBox.Value = state.StartingBuyIn;
+        
+        // Game control panel (shown after game ends)
+        var showGameControls = !string.IsNullOrEmpty(state.WinnerName) && seated;
+        GameControlPanel.Visible = showGameControls;
+        ContinueButton.Visible = showGameControls && state.Players.Count >= 2;
+        EndButton.Visible = showGameControls;
 
         // Community cards — 5 large slots
         CommunityCardsContainer.RemoveAllChildren();
@@ -180,12 +229,20 @@ public sealed partial class PokerTableWindow : DefaultWindow
                     var ctrl = MakeDraggableCard(card, idx);
                     MyCardsContainer.AddChild(ctrl);
                 }
+                
+                // Update hand strength if we have community cards
+                UpdateHandStrength(_myCardOrder, state.CommunityCards);
             }
             else
             {
                 MyCardsContainer.AddChild(MakeCardBackRect(BigCard));
                 MyCardsContainer.AddChild(MakeCardBackRect(BigCard));
+                HandStrengthPanel.Visible = false;
             }
+        }
+        else
+        {
+            HandStrengthPanel.Visible = false;
         }
 
         // Seat panels
@@ -294,13 +351,16 @@ public sealed partial class PokerTableWindow : DefaultWindow
             Margin = new Thickness(0, 3, 0, 0)
         };
 
-        if (player.HoleCards != null && player.HoleCards.Count > 0)
+        // Only show cards during showdown or for folded players
+        if (player.HoleCards != null && player.HoleCards.Count > 0 && 
+            (phase == PokerRoundPhase.Showdown || player.Status == PokerPlayerStatus.Folded))
         {
             foreach (var card in player.HoleCards)
                 cardsRow.AddChild(MakeCardRect(card.GetSpriteName(), SmallCard));
         }
         else if (phase != PokerRoundPhase.Waiting && player.Status == PokerPlayerStatus.Active)
         {
+            // Show card backs for active players during game
             cardsRow.AddChild(MakeCardBackRect(SmallCard));
             cardsRow.AddChild(MakeCardBackRect(SmallCard));
         }
@@ -393,5 +453,112 @@ public sealed partial class PokerTableWindow : DefaultWindow
         {
             MyCardsContainer.AddChild(MakeDraggableCard(_myCardOrder[i], i));
         }
+    }
+
+    private void SetQuickBetAmount(float potMultiplier)
+    {
+        if (_lastState == null) return;
+        
+        var targetAmount = (int)(_lastState.Pot * potMultiplier);
+        var maxBet = Math.Max(_lastState.MyStack, _lastState.MinRaise);
+        var finalAmount = Math.Min(targetAmount, maxBet);
+        
+        BetAmountSpinBox.Value = finalAmount;
+        BetSlider.Value = finalAmount;
+    }
+
+    private void SetAllIn()
+    {
+        if (_lastState == null) return;
+        
+        BetAmountSpinBox.Value = _lastState.MyStack;
+        BetSlider.Value = _lastState.MyStack;
+    }
+
+    private void UpdateHandStrength(List<PokerCard> holeCards, List<PokerCard> communityCards)
+    {
+        if (holeCards.Count < 2 || communityCards.Count == 0)
+        {
+            HandStrengthPanel.Visible = false;
+            return;
+        }
+
+        var allCards = holeCards.Concat(communityCards).ToList();
+        var (rank, _) = EvaluateBestHand(allCards);
+        
+        HandStrengthLabel.Text = rank.ToString().Replace("RoyalFlush", "Royal Flush")
+                                          .Replace("StraightFlush", "Straight Flush")
+                                          .Replace("FourOfAKind", "Four of a Kind")
+                                          .Replace("ThreeOfAKind", "Three of a Kind")
+                                          .Replace("TwoPair", "Two Pair")
+                                          .Replace("OnePair", "One Pair")
+                                          .Replace("HighCard", "High Card");
+        
+        HandStrengthPanel.Visible = true;
+    }
+
+    private (HandRank rank, List<PokerCard> bestFive) EvaluateBestHand(List<PokerCard> cards)
+    {
+        var best = (HandRank.HighCard, new List<PokerCard>());
+        var combos = GetCombinations(cards, 5);
+
+        foreach (var combo in combos)
+        {
+            var (rank, five) = EvaluateFiveCardHand(combo);
+            if (rank > best.Item1 || (rank == best.Item1 && CompareHands(five, best.Item2) > 0))
+                best = (rank, five);
+        }
+        return best;
+    }
+
+    private (HandRank, List<PokerCard>) EvaluateFiveCardHand(List<PokerCard> five)
+    {
+        var sorted = five.OrderByDescending(c => (int)c.Rank).ToList();
+        var isFlush = sorted.All(c => c.Suit == sorted[0].Suit);
+        var ranks = sorted.Select(c => (int)c.Rank).ToList();
+
+        var isStraight = false;
+        for (var i = 0; i < ranks.Count - 1; i++)
+            if (ranks[i] - ranks[i + 1] != 1) { isStraight = false; break; }
+            else isStraight = true;
+
+        if (!isStraight && ranks.SequenceEqual(new[] { 14, 5, 4, 3, 2 }))
+            isStraight = true;
+
+        var groups = sorted.GroupBy(c => c.Rank).OrderByDescending(g => g.Count()).ThenByDescending(g => (int)g.Key).ToList();
+        var counts = groups.Select(g => g.Count()).ToList();
+
+        if (isFlush && isStraight)
+            return ranks[0] == 14 ? (HandRank.RoyalFlush, sorted) : (HandRank.StraightFlush, sorted);
+        if (counts[0] == 4) return (HandRank.FourOfAKind, sorted);
+        if (counts[0] == 3 && counts[1] == 2) return (HandRank.FullHouse, sorted);
+        if (isFlush) return (HandRank.Flush, sorted);
+        if (isStraight) return (HandRank.Straight, sorted);
+        if (counts[0] == 3) return (HandRank.ThreeOfAKind, sorted);
+        if (counts[0] == 2 && counts[1] == 2) return (HandRank.TwoPair, sorted);
+        if (counts[0] == 2) return (HandRank.OnePair, sorted);
+        return (HandRank.HighCard, sorted);
+    }
+
+    private int CompareHands(List<PokerCard> a, List<PokerCard> b)
+    {
+        for (var i = 0; i < Math.Min(a.Count, b.Count); i++)
+        {
+            var cmp = ((int)a[i].Rank).CompareTo((int)b[i].Rank);
+            if (cmp != 0) return cmp;
+        }
+        return 0;
+    }
+
+    private IEnumerable<List<PokerCard>> GetCombinations(List<PokerCard> list, int k)
+    {
+        if (k == 0) { yield return new List<PokerCard>(); yield break; }
+        for (var i = 0; i <= list.Count - k; i++)
+            foreach (var rest in GetCombinations(list.Skip(i + 1).ToList(), k - 1))
+            {
+                var combo = new List<PokerCard> { list[i] };
+                combo.AddRange(rest);
+                yield return combo;
+            }
     }
 }
