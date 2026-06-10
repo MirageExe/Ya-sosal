@@ -1,0 +1,119 @@
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                Title="{Loc space-anomaly-study-console-title}"
+                SetSize="720 720"
+                MinSize="720 720">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8">
+        <Label Name="StatusLabel" StyleClasses="LabelHeading" />
+        <Label Name="RewardLabel" StyleClasses="LabelKeyText" />
+        <Label Name="StepLabel" />
+
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Button Name="RefreshButton" Text="{Loc space-anomaly-study-console-refresh}" HorizontalExpand="True" />
+            <Button Name="BeginButton" Text="{Loc space-anomaly-study-begin}" HorizontalExpand="True" MinHeight="36" />
+        </BoxContainer>
+
+        <ScrollContainer VerticalExpand="True" MinHeight="100" MaxHeight="120">
+            <BoxContainer Name="AnomalyList" Orientation="Vertical" SeparationOverride="4" />
+        </ScrollContainer>
+
+        <Label Text="{Loc space-anomaly-study-expedition-plan}" StyleClasses="LabelHeading" />
+        <ScrollContainer MinHeight="80" MaxHeight="100">
+            <BoxContainer Name="ExpeditionPlanList" Orientation="Vertical" SeparationOverride="2" />
+        </ScrollContainer>
+
+        <PanelContainer VerticalExpand="True" MinHeight="280">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#14141EFF" BorderColor="#9B59B6AA" BorderThickness="2" />
+            </PanelContainer.PanelOverride>
+            <ScrollContainer VerticalExpand="True">
+                <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="8">
+                    <BoxContainer Name="PhasePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="PhaseHintLabel" />
+                        <BoxContainer Orientation="Horizontal">
+                            <Label Text="{Loc space-anomaly-study-phase-a}" MinWidth="70" />
+                            <Slider Name="PhaseASlider" HorizontalExpand="True" MinValue="0" MaxValue="140" Value="70" />
+                            <Label Name="PhaseAValue" MinWidth="36" />
+                        </BoxContainer>
+                        <BoxContainer Orientation="Horizontal">
+                            <Label Text="{Loc space-anomaly-study-phase-b}" MinWidth="70" />
+                            <Slider Name="PhaseBSlider" HorizontalExpand="True" MinValue="0" MaxValue="140" Value="70" />
+                            <Label Name="PhaseBValue" MinWidth="36" />
+                        </BoxContainer>
+                        <Label Name="PhaseSumLabel" />
+                        <Button Name="SubmitPhaseButton" Text="{Loc space-anomaly-study-submit}" MinHeight="34" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="CipherPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="CipherHintLabel" />
+                        <Label Name="CipherTextLabel" StyleClasses="LabelHeading" />
+                        <Button Name="CipherOption0" MinHeight="34" />
+                        <Button Name="CipherOption1" MinHeight="34" />
+                        <Button Name="CipherOption2" MinHeight="34" />
+                        <Button Name="CipherOption3" MinHeight="34" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="TimingPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="TimingHintLabel" />
+                        <BoxContainer Orientation="Horizontal">
+                            <Label Text="{Loc space-anomaly-study-timing-position}" MinWidth="70" />
+                            <Slider Name="TimingSlider" HorizontalExpand="True" MinValue="0" MaxValue="100" Value="50" />
+                            <Label Name="TimingValue" MinWidth="36" />
+                        </BoxContainer>
+                        <Button Name="SubmitTimingButton" Text="{Loc space-anomaly-study-submit}" MinHeight="34" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="WirePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Text="{Loc space-anomaly-study-wire-hint}" />
+                        <BoxContainer Name="WireRows" Orientation="Vertical" SeparationOverride="4" />
+                        <Button Name="SubmitWireButton" Text="{Loc space-anomaly-study-submit}" MinHeight="34" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="MemoryPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="MemoryStatusLabel" />
+                        <BoxContainer Name="MemoryPatternDisplay" Orientation="Horizontal" SeparationOverride="6" MinHeight="36" />
+                        <GridContainer Name="MemoryGrid" Columns="3" HorizontalAlignment="Center" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <Button Name="MemoryResetButton" Text="{Loc rat-research-minigame-sequence-reset}" />
+                            <Button Name="SubmitMemoryButton" Text="{Loc space-anomaly-study-submit}" HorizontalExpand="True" MinHeight="34" />
+                        </BoxContainer>
+                    </BoxContainer>
+
+                    <BoxContainer Name="EvaPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="EvaStatusLabel" StyleClasses="LabelHeading" />
+                        <Label Name="EvaHintLabel" StyleClasses="LabelSecondaryColor" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="HarmonicPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Name="HarmonicHintLabel" />
+                        <Label Text="{Loc space-anomaly-study-harmonic-sum}" />
+                        <BoxContainer Orientation="Horizontal">
+                            <Label Text="{Loc space-anomaly-study-stability}" MinWidth="90" />
+                            <Slider Name="StabilitySlider" HorizontalExpand="True" MinValue="1" MaxValue="99" Value="50" />
+                            <Label Name="StabilityValue" MinWidth="36" />
+                        </BoxContainer>
+                        <BoxContainer Orientation="Horizontal">
+                            <Label Text="{Loc space-anomaly-study-severity}" MinWidth="90" />
+                            <Label Name="SeverityValue" HorizontalExpand="True" />
+                        </BoxContainer>
+                        <Label Name="HarmonicProductLabel" />
+                        <Button Name="SubmitHarmonicButton" Text="{Loc space-anomaly-study-submit}" MinHeight="34" />
+                    </BoxContainer>
+
+                    <BoxContainer Name="WaveformPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                        <Label Text="{Loc space-anomaly-study-waveform-pick}" StyleClasses="LabelHeading" />
+                        <ItemList Name="WaveformList" SelectMode="Single" MinHeight="100" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <Label Text="{Loc space-anomaly-study-waveform-index}" VerticalAlignment="Center" />
+                            <SpinBox Name="WaveformSpinBox" MinSize="90 0" />
+                        </BoxContainer>
+                        <Button Name="SubmitWaveformButton" Text="{Loc space-anomaly-study-waveform-confirm}" MinHeight="36" />
+                    </BoxContainer>
+
+                    <Label Name="IdleStageLabel" Text="{Loc space-anomaly-study-stage-idle}" VerticalAlignment="Center" />
+                </BoxContainer>
+            </ScrollContainer>
+        </PanelContainer>
+    </BoxContainer>
+</ui:FancyWindow>

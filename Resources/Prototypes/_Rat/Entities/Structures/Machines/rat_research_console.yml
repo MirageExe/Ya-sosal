@@ -1,0 +1,42 @@
+- type: entity
+  parent: BaseComputerAiAccess
+  id: RatResearchMinigameConsole
+  name: experimental R&D console
+  description: Advanced research interface with interactive calibration minigames.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: rdcomp
+    - map: ["computerLayerKeys"]
+      state: rd_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: ResearchClient
+  - type: TechnologyDatabase
+  - type: RatResearchMinigameConsole
+    tuneReward: 450
+    sequenceReward: 650
+    tuneTolerance: 8
+  - type: ActivatableUI
+    key: enum.RatResearchMinigameUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.RatResearchMinigameUiKey.Key:
+        type: RatResearchMinigameBui
+      enum.ResearchClientUiKey.Key:
+        type: ResearchClientBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: Computer
+    board: ResearchComputerCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#3fa7d6"

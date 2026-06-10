@@ -1,0 +1,207 @@
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                Title="{Loc rat-research-minigame-title}"
+                SetSize="780 700"
+                MinSize="780 700">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+            <Label Name="PointsLabel" StyleClasses="LabelHeading" VerticalAlignment="Center" />
+            <Label Name="StageLabel" StyleClasses="LabelKeyText" VerticalAlignment="Center" HorizontalExpand="True" />
+        </BoxContainer>
+        <Label Name="ActiveGameLabel" StyleClasses="LabelHeading" />
+        <Label Name="HintLabel" StyleClasses="LabelSecondaryColor" />
+
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="10">
+            <ScrollContainer VerticalExpand="True" MinWidth="210" MaxWidth="210">
+                <BoxContainer Name="GamePickerPanel" Orientation="Vertical" SeparationOverride="4">
+                    <Label Text="{Loc rat-research-minigame-pick}" StyleClasses="LabelHeading" />
+                    <Button Name="TuneGameButton" Text="{Loc rat-research-minigame-tune}" MinHeight="32" />
+                    <Button Name="SequenceGameButton" Text="{Loc rat-research-minigame-sequence}" MinHeight="32" />
+                    <Button Name="PhaseGameButton" Text="{Loc rat-research-minigame-phase}" MinHeight="32" />
+                    <Button Name="HarmonicGameButton" Text="{Loc rat-research-minigame-harmonic}" MinHeight="32" />
+                    <Button Name="WaveformGameButton" Text="{Loc rat-research-minigame-waveform}" MinHeight="32" />
+                    <Button Name="CipherGameButton" Text="{Loc rat-research-minigame-cipher}" MinHeight="32" />
+                    <Button Name="TimingGameButton" Text="{Loc rat-research-minigame-timing}" MinHeight="32" />
+                    <Button Name="WireGameButton" Text="{Loc rat-research-minigame-wire}" MinHeight="32" />
+                    <Button Name="MemoryGameButton" Text="{Loc rat-research-minigame-memory}" MinHeight="32" />
+                    <Button Name="BitRepairGameButton" Text="{Loc rat-research-minigame-bitrepair}" MinHeight="32" />
+                </BoxContainer>
+            </ScrollContainer>
+
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#14141EFF" BorderColor="#3FA7D6AA" BorderThickness="2" />
+                </PanelContainer.PanelOverride>
+                <ScrollContainer VerticalExpand="True">
+                    <BoxContainer Name="PuzzlePanel" Orientation="Vertical" Margin="12" SeparationOverride="8">
+                        <Label Name="PuzzleTitleLabel" StyleClasses="LabelHeading" />
+
+                        <BoxContainer Name="TuneBandPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-tune-band-prompt}" />
+                            <Button Name="TuneBandLowButton" Text="{Loc rat-research-minigame-tune-band-low}" MinHeight="34" />
+                            <Button Name="TuneBandMidButton" Text="{Loc rat-research-minigame-tune-band-mid}" MinHeight="34" />
+                            <Button Name="TuneBandHighButton" Text="{Loc rat-research-minigame-tune-band-high}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="TunePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-dial-a}" MinWidth="28" />
+                                <Slider Name="DialASlider" HorizontalExpand="True" MinValue="0" MaxValue="100" Value="50" />
+                                <Label Name="DialAValue" MinWidth="36" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-dial-b}" MinWidth="28" />
+                                <Slider Name="DialBSlider" HorizontalExpand="True" MinValue="0" MaxValue="100" Value="50" />
+                                <Label Name="DialBValue" MinWidth="36" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-dial-c}" MinWidth="28" />
+                                <Slider Name="DialCSlider" HorizontalExpand="True" MinValue="0" MaxValue="100" Value="50" />
+                                <Label Name="DialCValue" MinWidth="36" />
+                            </BoxContainer>
+                            <Label Name="TuneAverageLabel" />
+                            <Label Name="TuneModulationLabel" Visible="False" />
+                            <Button Name="SubmitTuneButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                            <Button Name="SubmitTuneFinalizeButton" Text="{Loc rat-research-minigame-submit}" Visible="False" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="SequencePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="SequenceModeLabel" />
+                            <Label Text="{Loc rat-research-minigame-sequence-target}" />
+                            <BoxContainer Name="SequenceTargetDisplay" Orientation="Horizontal" SeparationOverride="6" MinHeight="40" />
+                            <Label Text="{Loc rat-research-minigame-sequence-answer}" />
+                            <BoxContainer Name="SequenceAnswerDisplay" Orientation="Horizontal" SeparationOverride="6" MinHeight="40" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                                <Button Name="SeqColor0" Text="{Loc rat-research-minigame-color-red}" HorizontalExpand="True" MinHeight="32" />
+                                <Button Name="SeqColor1" Text="{Loc rat-research-minigame-color-blue}" HorizontalExpand="True" MinHeight="32" />
+                                <Button Name="SeqColor2" Text="{Loc rat-research-minigame-color-green}" HorizontalExpand="True" MinHeight="32" />
+                                <Button Name="SeqColor3" Text="{Loc rat-research-minigame-color-yellow}" HorizontalExpand="True" MinHeight="32" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                <Button Name="SequenceResetButton" Text="{Loc rat-research-minigame-sequence-reset}" />
+                                <Button Name="SubmitSequenceButton" Text="{Loc rat-research-minigame-submit}" HorizontalExpand="True" MinHeight="34" />
+                            </BoxContainer>
+                        </BoxContainer>
+
+                        <BoxContainer Name="PhasePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="PhaseStageLabel" />
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-phase-a}" MinWidth="28" />
+                                <Slider Name="PhaseASlider" HorizontalExpand="True" MinValue="0" MaxValue="140" Value="70" />
+                                <Label Name="PhaseAValue" MinWidth="36" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-phase-b}" MinWidth="28" />
+                                <Slider Name="PhaseBSlider" HorizontalExpand="True" MinValue="0" MaxValue="140" Value="70" />
+                                <Label Name="PhaseBValue" MinWidth="36" />
+                            </BoxContainer>
+                            <Label Name="PhaseSumLabel" />
+                            <Button Name="SubmitPhaseButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="HarmonicPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="HarmonicStageLabel" />
+                            <Label Text="{Loc rat-research-minigame-harmonic-sum}" />
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-stability}" MinWidth="90" />
+                                <Slider Name="StabilitySlider" HorizontalExpand="True" MinValue="1" MaxValue="99" Value="50" />
+                                <Label Name="StabilityValue" MinWidth="36" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal">
+                                <Label Text="{Loc rat-research-minigame-severity}" MinWidth="90" />
+                                <Label Name="SeverityValue" HorizontalExpand="True" />
+                            </BoxContainer>
+                            <Label Name="HarmonicProductLabel" />
+                            <Button Name="SubmitHarmonicButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="WaveformFilterPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-waveform-filter-prompt}" />
+                            <Button Name="WaveNoise0" ToggleMode="True" MinHeight="32" />
+                            <Button Name="WaveNoise1" ToggleMode="True" MinHeight="32" />
+                            <Button Name="WaveNoise2" ToggleMode="True" MinHeight="32" />
+                            <Button Name="WaveNoise3" ToggleMode="True" MinHeight="32" />
+                            <Button Name="SubmitWaveformFilterButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="WaveformPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-waveform-pick}" />
+                            <ItemList Name="WaveformList" SelectMode="Single" MinHeight="120" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                <Label Text="{Loc rat-research-minigame-waveform-index}" VerticalAlignment="Center" />
+                                <SpinBox Name="WaveformSpinBox" MinSize="90 0" />
+                            </BoxContainer>
+                            <Button Name="SubmitWaveformButton" Text="{Loc rat-research-minigame-waveform-confirm}" MinHeight="36" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="CipherShiftPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-cipher-shift-prompt}" />
+                            <Button Name="CipherShift0" MinHeight="34" />
+                            <Button Name="CipherShift1" MinHeight="34" />
+                            <Button Name="CipherShift2" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="CipherPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="CipherPromptLabel" />
+                            <Label Name="CipherTextLabel" StyleClasses="LabelHeading" />
+                            <Button Name="CipherOption0" MinHeight="34" />
+                            <Button Name="CipherOption1" MinHeight="34" />
+                            <Button Name="CipherOption2" MinHeight="34" />
+                            <Button Name="CipherOption3" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="TimingPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="TimingHintLabel" />
+                            <Label Name="TimingPositionLabel" StyleClasses="LabelHeading" />
+                            <Button Name="CatchTimingButton" Text="{Loc rat-research-minigame-timing-catch}" MinHeight="36" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="WirePortPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-wire-port-prompt}" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                <SpinBox Name="WirePortSpinBox" MinSize="90 0" />
+                                <Button Name="SubmitWirePortButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                            </BoxContainer>
+                        </BoxContainer>
+
+                        <BoxContainer Name="WirePanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-wire-hint}" />
+                            <BoxContainer Name="WireRows" Orientation="Vertical" SeparationOverride="4" />
+                            <Button Name="SubmitWireButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <BoxContainer Name="BitCountPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-bitrepair-count-prompt}" />
+                            <Label Name="BitMaskPreviewLabel" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                <SpinBox Name="BitCountSpinBox" MinSize="90 0" />
+                                <Button Name="SubmitBitCountButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                            </BoxContainer>
+                        </BoxContainer>
+
+                        <BoxContainer Name="MemoryPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Name="MemoryStatusLabel" />
+                            <BoxContainer Name="MemoryPatternDisplay" Orientation="Horizontal" SeparationOverride="6" MinHeight="36" />
+                            <GridContainer Name="MemoryGrid" Columns="3" HorizontalAlignment="Center" />
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                <Button Name="MemoryResetButton" Text="{Loc rat-research-minigame-sequence-reset}" />
+                                <Button Name="SubmitMemoryButton" Text="{Loc rat-research-minigame-submit}" HorizontalExpand="True" MinHeight="34" />
+                            </BoxContainer>
+                        </BoxContainer>
+
+                        <BoxContainer Name="BitRepairPanel" Orientation="Vertical" Visible="False" SeparationOverride="6">
+                            <Label Text="{Loc rat-research-minigame-bitrepair-hint}" />
+                            <Label Name="BitMaskLabel" />
+                            <BoxContainer Name="BitButtonsRow" Orientation="Horizontal" HorizontalAlignment="Center" SeparationOverride="4" />
+                            <Label Name="BitCurrentLabel" />
+                            <Button Name="SubmitBitRepairButton" Text="{Loc rat-research-minigame-submit}" MinHeight="34" />
+                        </BoxContainer>
+
+                        <Label Name="IdlePuzzleLabel" Text="{Loc rat-research-minigame-idle}" VerticalAlignment="Center" />
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:FancyWindow>

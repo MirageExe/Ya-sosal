@@ -1,0 +1,14 @@
+- type: entity
+  id: RatSpaceAnomalyEvent
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    earliestStart: 20
+    minimumPlayers: 1
+    weight: 8
+    duration: 600
+    maxOccurrences: 3
+  - type: SpaceAnomalySpawnRule
+    spawnCount: 4
+    announcement: space-anomaly-event-announcement

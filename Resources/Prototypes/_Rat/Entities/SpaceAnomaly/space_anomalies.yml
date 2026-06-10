@@ -1,0 +1,117 @@
+- type: entity
+  id: RatSpaceAnomalyBase
+  abstract: true
+  components:
+  - type: SpaceAnomaly
+    studyPointReward: 50000
+    scale: 4, 4
+  - type: Anomaly
+    minPulseLength: 45
+    maxPulseLength: 90
+  - type: ScaleVisuals
+    scale: 4, 4
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 1.4
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: PointLight
+    radius: 12
+    energy: 8
+    castShadows: false
+
+- type: entity
+  id: RatSpaceAnomalyGravity
+  parent: [AnomalyGravity, RatSpaceAnomalyBase]
+  name: space gravity anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-gravity
+    behavior: Gravity
+    studyPointReward: 50000
+
+- type: entity
+  id: RatSpaceAnomalyBluespace
+  parent: [AnomalyBluespace, RatSpaceAnomalyBase]
+  name: space bluespace anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-bluespace
+    behavior: Bluespace
+    studyPointReward: 50000
+
+- type: entity
+  id: RatSpaceAnomalyPyro
+  parent: [AnomalyPyroclastic, RatSpaceAnomalyBase]
+  name: space pyroclastic anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-pyro
+    behavior: Pyro
+    studyPointReward: 50000
+
+- type: entity
+  id: RatSpaceAnomalyElectric
+  parent: [AnomalyElectricity, RatSpaceAnomalyBase]
+  name: space electric anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-electric
+    behavior: Electric
+    studyPointReward: 50000
+
+- type: entity
+  id: RatSpaceAnomalyIce
+  parent: [AnomalyIce, RatSpaceAnomalyBase]
+  name: space ice anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-ice
+    behavior: Ice
+    studyPointReward: 50000
+
+- type: entity
+  id: RatSpaceAnomalyFlesh
+  parent: [AnomalyFlesh, RatSpaceAnomalyBase]
+  name: space flesh anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-flesh
+    behavior: Flesh
+    studyPointReward: 52000
+
+- type: entity
+  id: RatSpaceAnomalyShadow
+  parent: [AnomalyShadow, RatSpaceAnomalyBase]
+  name: space shadow anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-shadow
+    behavior: Shadow
+    studyPointReward: 52000
+
+- type: entity
+  id: RatSpaceAnomalyLiquid
+  parent: [AnomalyLiquid, RatSpaceAnomalyBase]
+  name: space liquid anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-liquid
+    behavior: Liquid
+    studyPointReward: 54000
+
+- type: entity
+  id: RatSpaceAnomalyFlora
+  parent: [AnomalyFlora, RatSpaceAnomalyBase]
+  name: space flora anomaly
+  components:
+  - type: SpaceAnomaly
+    typeName: space-anomaly-type-flora
+    behavior: Flora
+    studyPointReward: 54000
