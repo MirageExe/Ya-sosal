@@ -1,0 +1,51 @@
+rat-faction-examine = Подфракция: { $faction }
+
+rat-faction-label = Подфракция
+rat-faction-tab-name = Подфракции
+rat-faction-tab-title = Подфракция
+rat-faction-selector-none = Без подфракции
+rat-faction-selector-whitelisted = [Вайтлист]
+rat-faction-window-title = Выбор подфракции
+rat-faction-window-description = Выберите подфракцию для вашего персонажа (дополнительная организация внутри основной фракции):
+rat-faction-window-close = Закрыть
+rat-faction-button-text = Подфракция
+rat-faction-search-placeholder = Поиск подфракции...
+rat-faction-apply = Применить
+rat-faction-cancel = Отмена
+humanoid-profile-editor-faction-load-button = Загрузить
+
+cmd-factioncreate-desc = Создать новую подфракцию
+cmd-factioncreate-help = factioncreate <name> <isWhitelisted:true/false> [description]
+cmd-factiondelete-desc = Удалить подфракцию
+cmd-factiondelete-help = factiondelete <name>
+cmd-factionlist-desc = Показать список всех подфракций
+cmd-factionlist-help = factionlist
+cmd-factionsetmanager-desc = Назначить менеджера подфракции
+cmd-factionsetmanager-help = factionsetmanager <player> <faction>
+cmd-factionremovemanager-desc = Убрать менеджера подфракции
+cmd-factionremovemanager-help = factionremovemanager <player> <faction>
+
+cmd-factionwhitelistadd-desc = Добавить игрока в вайтлист подфракции
+cmd-factionwhitelistadd-help = factionwhitelistadd <player> <faction>
+cmd-factionwhitelistremove-desc = Убрать игрока из вайтлиста подфракции
+cmd-factionwhitelistremove-help = factionwhitelistremove <player> <faction>
+cmd-factionwhitelistget-desc = Проверить вайтлист игрока для подфракции
+cmd-factionwhitelistget-help = factionwhitelistget <player> <faction>
+
+cmd-faction-created = Подфракция "{$name}" успешно создана.
+cmd-faction-deleted = Подфракция "{$name}" удалена.
+cmd-faction-not-found = Подфракция "{$name}" не найдена.
+cmd-faction-already-exists = Подфракция с таким именем уже существует.
+cmd-faction-manager-added = Игрок {$player} назначен менеджером подфракции "{$faction}".
+cmd-faction-manager-removed = Игрок {$player} снят с управления подфракцией "{$faction}".
+cmd-faction-manager-already = Игрок {$player} уже является менеджером подфракции "{$faction}".
+cmd-faction-whitelist-added = Игрок {$player} добавлен в вайтлист подфракции "{$faction}".
+cmd-faction-whitelist-removed = Игрок {$player} убран из вайтлиста подфракции "{$faction}".
+cmd-faction-whitelist-already = Игрок {$player} уже в вайтлисте подфракции "{$faction}".
+cmd-faction-whitelist-not-found = Игрок {$player} не в вайтлисте подфракции "{$faction}".
+cmd-faction-not-manager = Вы не являетесь менеджером этой подфракции.
+cmd-faction-player-not-found = Игрок "{$player}" не найден.
+cmd-faction-hint-name = Название подфракции
+cmd-faction-hint-player = Имя игрока
+cmd-faction-list-entry = Подфракция: {$name} | Вайтлист: {$whitelisted} | Описание: {$description}
+cmd-faction-list-empty = Подфракций нет.
